@@ -4,8 +4,10 @@
 
 
 <div class="website">
-  <h2>{website.name}</h2>
-  <a href={website.url}><code>{website.url}</code></a>
+  <div class="website-title">
+    <h2>{website.name}</h2>
+    <a href={website.url}><code>{website.url}</code></a>
+  </div>
   <p>{website.description}</p>
   <img src={website.image} alt="" />
 </div>
@@ -15,25 +17,25 @@
   .website {
     border: darkgray solid 2px;
     border-radius: 10px;
-    background-color: transparent;
-    width: 100%;
     text-align: center;
-    color: black;
+    width: 90%;
+    margin: auto;
+    padding: 8px;
 
-    h2 {
-      margin-bottom: 4px;
-    }
+    .website-title {
+      margin-bottom: 16px;
 
-    a {
-      color: dodgerblue;
+      h2 {
+        margin-bottom: 4px;
+      }
     }
 
     img {
-      height: 300px;
+      max-height: 300px;
 
       @media (max-width: 840px) {
-        width: 100%;
         height: auto;
+        max-width: 100%;
       }
     }
   }

@@ -13,7 +13,7 @@
 
 <div id="app">
   <header>
-    <h1><code>{"<"}<span>drawbu.dev</span> \></code></h1>
+    <h1><code>{'<'}<span>drawbu.dev</span> \></code></h1>
     <code>
       I'm <a href="https://drawbu.me">drawbu</a> and welcome to my projects portfolio.
       <br/> Fell free to click on anything :)
@@ -29,7 +29,7 @@
 <style lang="scss">
   #app {
     width: 800px;
-    margin: 0 auto;
+    margin: auto;
 
     @media (max-width: 840px) {
       width: auto;
@@ -38,23 +38,22 @@
     header {
       margin-bottom: 3rem;
       text-align: center;
-      padding: 1em;
+      padding: 8px;
 
       h1 {
         color: darkgray;
+        font-size: 30px;
+        font-weight: 100;
+        margin-top: 16px;
+        margin-bottom: 16px;
+
         span {
           color: dodgerblue;
         }
-        font-size: 30px;
-        font-weight: 100;
 
         @media (min-width: 350px) {
           font-size: 50px;
         }
-      }
-
-      a {
-        color: dodgerblue;
       }
     }
 
