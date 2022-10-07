@@ -1,29 +1,29 @@
 <script>
-    import Website from './lib/website.svelte'
+  import Website from './lib/website.svelte'
 
-    const websites_list = [
-        {
-            url: 'https://ascii.drawbu.dev',
-            name: 'ASCII ART Convertor',
-            description: 'Converts an image given by a user, to a new colored ASCII ART image.',
-            image: 'https://raw.githubusercontent.com/drawbu/ASCII-ART-Generator/master/assets/screenshot.png',
-        },
-    ]
+  const websites_list = [
+    {
+      url: 'https://ascii.drawbu.dev',
+      name: 'ASCII ART Convertor',
+      description: 'Converts an image given by a user, to a new colored ASCII ART image.',
+      image: 'https://raw.githubusercontent.com/drawbu/ASCII-ART-Generator/master/assets/screenshot.png',
+    },
+  ]
 </script>
 
 <div id="app">
-    <header>
-        <h1><code>{"<"}<span>drawbu.dev</span> \></code></h1>
-        <code>
-            I'm <a href="https://drawbu.me">drawbu</a> and welcome to my projects portfolio.
-            <br/> Fell free to click on anything :)
-        </code>
-    </header>
-    <main>
-        {#each websites_list as website}
-            <Website website={website} />
-        {/each}
-    </main>
+  <header>
+    <h1><code>{"<"}<span>drawbu.dev</span> \></code></h1>
+    <code>
+      I'm <a href="https://drawbu.me">drawbu</a> and welcome to my projects portfolio.
+      <br/> Fell free to click on anything :)
+    </code>
+  </header>
+  <main>
+    {#each websites_list as website}
+      <Website website={website} />
+    {/each}
+  </main>
 </div>
 
 <style lang="scss">
