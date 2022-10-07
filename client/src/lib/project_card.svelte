@@ -1,22 +1,22 @@
 <script>
   import { GithubIcon } from 'svelte-feather-icons';
 
-  export let website;
+  export let project;
 </script>
 
 
 <div class="website">
   <div class="website-title">
-    {#if website.repo}
-      <a href={website.repo} class="repo-link">
+    {#if project.repo}
+      <a href={project.repo} class="repo-link">
         <GithubIcon />
       </a>
     {/if}
-    <h2>{website.name}</h2>
-    <a href={website.url}><code>{website.url}</code></a>
+    <h2>{project.name}</h2>
+    <a href={project.url}><code>{project.url}</code></a>
   </div>
-  <p>{website.description}</p>
-  <img src={website.image} alt="" />
+  <p>{project.description}</p>
+  <img src={project.image} alt="" />
 </div>
 
 

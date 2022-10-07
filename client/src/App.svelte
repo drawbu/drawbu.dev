@@ -1,7 +1,7 @@
 <script>
-  import Website from './lib/website.svelte'
+  import ProjectCard from './lib/project_card.svelte'
 
-  const websites_list = [
+  const projects_list = [
     {
       url: 'https://ascii.drawbu.dev',
       name: 'ASCII ART Convertor',
@@ -21,8 +21,8 @@
     </code>
   </header>
   <main>
-    {#each websites_list as website}
-      <Website website={website} />
+    {#each projects_list as project}
+      <ProjectCard project={project} />
     {/each}
   </main>
 </div>
@@ -47,12 +47,13 @@
         font-weight: 100;
         margin-top: 16px;
         margin-bottom: 16px;
+        transition-duration: 500ms;
 
         span {
           color: dodgerblue;
         }
 
-        @media (min-width: 350px) {
+        @media (min-width: 450px) {
           font-size: 50px;
         }
       }
