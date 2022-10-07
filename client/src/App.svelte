@@ -1,6 +1,7 @@
 <script>
   import Header from './lib/header.svelte'
   import ProjectCard from './lib/project_card.svelte';
+  import Footer from './lib/footer.svelte'
 
   const projects_list = [
     {
@@ -20,6 +21,7 @@
       <ProjectCard project={project} />
     {/each}
   </main>
+  <Footer />
 </div>
 
 <style lang="scss">
