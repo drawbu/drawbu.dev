@@ -1,10 +1,17 @@
 <script>
+  import { GithubIcon } from 'svelte-feather-icons';
+
   export let website;
 </script>
 
 
 <div class="website">
   <div class="website-title">
+    {#if website.repo}
+      <a href={website.repo} class="repo-link">
+        <GithubIcon />
+      </a>
+    {/if}
     <h2>{website.name}</h2>
     <a href={website.url}><code>{website.url}</code></a>
   </div>
@@ -25,6 +32,16 @@
     .website-title {
       margin-bottom: 16px;
 
+      .repo-link {
+        color: #333;
+        :global(svg.feather-github) {
+          float: right;
+        }
+
+        &:hover {
+          color: dodgerblue;
+        }
+      }
       h2 {
         margin-bottom: 4px;
       }

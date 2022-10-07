@@ -7,6 +7,7 @@
       name: 'ASCII ART Convertor',
       description: 'Converts an image given by a user, to a new colored ASCII ART image.',
       image: 'https://raw.githubusercontent.com/drawbu/ASCII-ART-Generator/master/assets/screenshot.png',
+      repo: 'https://github.com/drawbu/ASCII-ART-Generator'
     },
   ]
 </script>
