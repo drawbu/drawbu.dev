@@ -4,7 +4,6 @@
   export let project;
 </script>
 
-
 <div class="website">
   <div class="website-title">
     {#if project.repo}
@@ -18,7 +17,6 @@
   <p>{project.description}</p>
   <img src={project.image} alt="" />
 </div>
-
 
 <style lang="scss">
   .website {
