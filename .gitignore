@@ -2,20 +2,8 @@
 .idea
 .vscode
 
-# Python env
-__pycache__
-.py[cod]
-.venv
-venv
-
-# Packaging
-*.egg-info
-
-# Flask
-.flaskenv
-
 # Node modules
 node_modules
 
 # Front Build
-client/public/build
+dist
