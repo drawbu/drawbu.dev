@@ -1,0 +1,171 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html  {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "SF Pro", arial, serif;
+}
+
+#app {
+  width: 800px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Header */
+header {
+  height: 101vh;
+  position: relative;
+  flex-direction: column;
+  transition: all 1s;
+}
+
+
+header.scrolled {
+  margin-top: 50px;
+  height: 400px;
+}
+
+#header-content {
+  box-sizing:border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  width: 800px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header .separator {
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  transform: translate(-50%, 0);
+  height: 5px;
+  width: 0;
+  margin: 0 auto;
+  background-color: #000;
+  transition: all 1s;
+}
+
+header.scrolled .separator {
+  width: 700px;
+}
+
+#title > h1 {
+  font-size: 36px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+#title > p {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+#contact {
+  display: flex;
+  flex-direction: column;
+  gap: 20px
+}
+
+#scroll-down-btn {
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  transform: translate(-50%, 0);
+  margin: 0 auto;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+header.scrolled #scroll-down-btn {
+  display: none;
+}
+
+
+/* Main */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+section {
+  width: 100%;
+}
+
+section .line {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+}
+
+section .card {
+  width: 325px;
+  height: 250px;
+  position: relative;
+  border: 4px solid rgba(255, 255, 255, .15);
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);
+  border-radius: 16px;
+}
+
+section .card > img {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 16px;
+}
+
+section .card > .panel {
+  box-sizing:border-box;
+  width: 100%;
+  height: 90px;
+  position: absolute;
+  bottom: 0;
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);
+  background-color: rgba(255, 255, 255, .15);
+  backdrop-filter: blur(5px);
+  border-radius: 0 0 16px 16px;
+  flex-wrap: unset;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 25px;
+  align-items: center;
+}
+
+section .card > .panel > .content > h3 {
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+section .card > .panel > .content > p {
+  font-size: 14px;
+  font-weight: 300;
+}
+
+section .card > .panel > .content > p > a {
+  color: dodgerblue;
+  text-decoration: none;
+}
+
+section .card > .panel > .content > p > a:hover {
+  text-decoration: underline;
+}
+
+

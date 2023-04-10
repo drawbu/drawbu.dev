@@ -1,9 +1,8 @@
 # IDE config files
-.idea
-.vscode
+.idea/
+.vscode/
 
-# Node modules
-node_modules
-
-# Front Build
-dist
+# Python env
+__pycache__/
+.venv/
+venv/
