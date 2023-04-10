@@ -6,31 +6,42 @@
 html  {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
   font-family: "SF Pro", arial, serif;
 }
 
 #app {
   width: 800px;
   min-height: 100vh;
-  display: flex;
   flex-direction: column;
+  margin: 0 auto;
+
+  display: flex;
+  overflow: auto;
+  flex: none;
+  flex-flow: column nowrap;
+  scroll-snap-type: y mandatory;
+  height: 100vh;
+}
+
+#app::-webkit-scrollbar {
+    display: none;
+}
+
+header,
+main {
+  scroll-snap-align: center;
+  flex: none;
+  height: 100%;
 }
 
 
 /* Header */
 header {
-  height: 101vh;
   position: relative;
   flex-direction: column;
   transition: all 1s;
-}
-
-
-header.scrolled {
-  margin-top: 50px;
-  height: 400px;
+  scroll-snap-align: center;
 }
 
 #header-content {
@@ -90,14 +101,8 @@ header.scrolled .separator {
   cursor: pointer;
 }
 
-header.scrolled #scroll-down-btn {
-  display: none;
-}
-
-
 /* Main */
 main {
-  flex: 1;
   display: flex;
   flex-direction: column;
   margin-top: 16px;
@@ -167,5 +172,3 @@ section .card > .panel > .content > p > a {
 section .card > .panel > .content > p > a:hover {
   text-decoration: underline;
 }
-
-
