@@ -15,23 +15,6 @@ html  {
   min-height: 100vh;
   flex-direction: column;
   margin: 0 auto;
-
-  display: flex;
-  overflow: auto;
-  flex: none;
-  flex-flow: column nowrap;
-  scroll-snap-type: y mandatory;
-  height: 100vh;
-}
-
-#app::-webkit-scrollbar {
-    display: none;
-}
-
-#app > section {
-  scroll-snap-align: center;
-  flex: none;
-  height: 100%;
 }
 
 
@@ -101,24 +84,21 @@ html  {
 }
 
 /* Main */
-main {
+#portfolio {
   display: flex;
   flex-direction: column;
   margin-top: 16px;
-}
-
-.portfolio {
   width: 100%;
 }
 
-.portfolio .line {
+#portfolio .line {
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: space-between;
 }
 
-.portfolio .card {
+#portfolio .card {
   width: 325px;
   height: 250px;
   position: relative;
@@ -127,14 +107,14 @@ main {
   border-radius: 16px;
 }
 
-.portfolio .card > img {
+#portfolio .card > img {
   width: 100%;
   height: 100%;
   position: absolute;
   border-radius: 16px;
 }
 
-.portfolio .card > .panel {
+#portfolio .card > .panel {
   box-sizing:border-box;
   width: 100%;
   height: 90px;
@@ -152,22 +132,22 @@ main {
   align-items: center;
 }
 
-.portfolio .card > .panel > .content > h3 {
+#portfolio .card > .panel > .content > h3 {
   font-size: 20px;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.portfolio .card > .panel > .content > p {
+#portfolio .card > .panel > .content > p {
   font-size: 14px;
   font-weight: 300;
 }
 
-.portfolio .card > .panel > .content > p > a {
+#portfolio .card > .panel > .content > p > a {
   color: dodgerblue;
   text-decoration: none;
 }
 
-.portfolio .card > .panel > .content > p > a:hover {
+#portfolio .card > .panel > .content > p > a:hover {
   text-decoration: underline;
 }
