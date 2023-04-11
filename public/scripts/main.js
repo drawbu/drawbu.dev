@@ -1,6 +1,6 @@
-const main = document.querySelector('main');
+const portfolio = document.getElementById('portfolio');
 const scrollDownButton = document.getElementById('scroll-down-btn');
 
 scrollDownButton.addEventListener('click', () => {
-  main.scrollIntoView({ behavior: 'smooth' });
+  portfolio.scrollIntoView({ behavior: 'smooth' });
 });
