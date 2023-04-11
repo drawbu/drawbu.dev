@@ -11,9 +11,29 @@ html  {
 }
 
 #app {
-  width: 800px;
   min-height: 100vh;
   flex-direction: column;
+  width: 100vw;
+  display: flex;
+  overflow: auto;
+  flex: none;
+  flex-flow: column nowrap;
+  scroll-snap-type: y mandatory;
+  height: 100vh;
+}
+
+#app::-webkit-scrollbar {
+  display: none;
+}
+
+#app > section {
+  scroll-snap-align: center;
+  flex: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 800px;
   margin: 0 auto;
 }
 
