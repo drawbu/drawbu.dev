@@ -1,102 +1,157 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from './page.module.css'
+'use client';
 
-const inter = Inter({ subsets: ['latin'] })
+import Image from 'next/image'
+import React from 'react';
+
+interface CardProps {
+  bg_src: string,
+  name: string,
+  link?: string,
+  repo?: string,
+}
+
+const Card: React.FC<CardProps> = ({ bg_src, name, link, repo }) => {
+  function returnRepo(): JSX.Element | undefined {
+    if (!repo) {
+      return;
+    }
+    return (<a href={repo}>
+      <Image
+        src="/images/github.svg"
+        alt="GitHub logo"
+        width={24}
+        height={24}
+      />
+    </a>);
+  }
+
+  function returnLink(): JSX.Element | undefined {
+    if (!link) {
+      return;
+    }
+    return (<p><a href={link}>{link}</a></p>);
+  }
+
+  return (
+    <div className="card">
+      <Image
+        src={bg_src}
+        alt="Background image"
+        width={300}
+        height={300}
+      />
+      <div className="panel">
+        <div className="content">
+          <h3>{name}</h3>
+          {returnLink()}
+        </div>
+        {returnRepo()}
+      </div>
+    </div>
+  )
+}
+
+
+const ScrollDownBtn = () => {
+  const portfolio = document.getElementById('portfolio');
+
+  function handleScrollDown() {
+    if (!portfolio)
+      return;
+    portfolio.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  return (
+    <button id="scroll-down-btn" onClick={handleScrollDown}>
+      <Image
+        src="/images/chevron-down.svg"
+        alt="Chevron down"
+        width={24}
+        height={24}
+      />
+    </button>
+  )
+
+}
+
 
 export default function Home() {
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div id="app">
+      <section id="header">
+        <div id="header-content">
+          <div id="title">
+            <h1>Clément Boillot</h1>
+            <p>18 yo French student in computer science</p>
+          </div>
+          <div id="contact">
+            <a href="https://github.com/drawbu" id="github">
+              <Image
+                src="/images/github.svg"
+                alt="GitHub logo"
+                width={24}
+                height={24}
+              />
+            </a>
+            <a href="https://twitter.com/drawbu" id="twitter">
+              <Image
+                src="/images/twitter.svg"
+                alt="Twitter logo"
+                width={24}
+                height={24}
+              />
+            </a>
+            <a href="mailto:clement2104.boillot@gmail.com" id="mail">
+              <Image
+                src="/images/mail.svg"
+                alt="Mail icon"
+                width={24}
+                height={24}
+              />
+            </a>
+          </div>
         </div>
-      </div>
+        <div className="separator"></div>
+        <ScrollDownBtn />
+      </section>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      <section id="portfolio">
+        <div className="line">
+          <Card
+            bg_src="https://cdn.discordapp.com/attachments/837615989830975519/1093939921733042247/random.png"
+            name="Cubes fight"
+            link="https://cubes.drawbu.dev"
+            repo="https://github.com/drawbu/cubes-fight"
+          />
+          <Card
+            bg_src="https://cdn.discordapp.com/attachments/837615989830975519/1093939921733042247/random.png"
+            name="ASCII Art generator"
+            link="https://ascii.drawbu.dev"
+            repo="https://github.com/drawbu/ASCII-Art-generator"
+          />
+        </div>
+        <div className="line">
+          <Card
+            bg_src="https://cdn.discordapp.com/attachments/837615989830975519/1093939921733042247/random.png"
+            name="My dotfiles"
+            repo="https://github.com/drawbu/dotfiles"
+          />
+          <Card
+            bg_src="https://cdn.discordapp.com/attachments/837615989830975519/1093939921733042247/random.png"
+            name="Nextbus"
+            repo="https://github.com/drawbu/nextbus"
+          />
+        </div>
+        <div className="line">
+          <Card
+            bg_src="https://cdn.discordapp.com/attachments/837615989830975519/1093939921733042247/random.png"
+            name="Nuit de l'info 2022"
+            link="http://sex-info.ml/"
+            repo="https://github.com/Theo-Morin/NDI-2022"
+          />
+        </div>
+      </section>
+    </div>
+)
 }
