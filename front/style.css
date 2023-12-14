@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue&family=JetBrains+Mono:wght@400;800&family=Roboto:wght@100&display=swap');
+
+body {
+    font-family: 'JetBrains Mono', monospace;
+    --main-color: dodgerblue;
+}
+
+body > * {
+    width: 800px;
+    margin: auto;
+}
+
+a {
+    color: var(--main-color);
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    transition-duration: .5s;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration-color: var(--main-color);
+}

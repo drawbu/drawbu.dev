@@ -1,9 +1,0 @@
-# IDE config files
-.idea
-.vscode
-
-# Node modules
-node_modules
-
-# Front Build
-dist
