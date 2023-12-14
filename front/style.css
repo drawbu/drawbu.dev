@@ -1,0 +1,18 @@
+@import url('/assets/fonts/HelveticaNeueLTPro/helvetica.css');
+
+body {
+    font-family: 'Helvetica Neue LT Pro', arial, serif;
+    --main-color: dodgerblue;
+}
+
+a {
+    color: var(--main-color);
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    transition-duration: .5s;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration-color: var(--main-color);
+}
