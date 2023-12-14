@@ -13,6 +13,7 @@ RUN python3.11 -m venv venv
 RUN venv/bin/pip install -r requirements.txt
 
 CMD venv/bin/gunicorn                              \
+    -k uvicorn.workers.UvicornWorker \
     --workers 3                           \
     --bind unix:/pool/process/server.sock \
     -m 007                                \
