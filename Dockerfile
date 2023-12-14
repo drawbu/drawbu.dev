@@ -6,12 +6,13 @@ COPY . .
 
 RUN apt-get update
 RUN apt-get install -y \
-    python3.12         \
-    python3.12-venv
+    python3.11         \
+    python3.11-venv
 
-RUN pip install -r requirements.txt
+RUN python3.11 -m venv venv
+RUN venv/bin/pip install -r requirements.txt
 
-CMD gunicorn                              \
+CMD venv/bin/gunicorn                              \
     --workers 3                           \
     --bind unix:/pool/process/server.sock \
     -m 007                                \
