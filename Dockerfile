@@ -5,8 +5,8 @@ WORKDIR /poll
 COPY . .
 
 RUN apt-get update
-RUN apt-get install  \
-    python3.12       \
+RUN apt-get install -y \
+    python3.12         \
     python3.12-venv
 
 RUN pip install -r requirements.txt
