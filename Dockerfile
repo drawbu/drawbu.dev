@@ -4,7 +4,8 @@ FROM ubuntu
 WORKDIR /poll
 COPY . .
 
-RUN sudo apt install \
+RUN apt-get update
+RUN apt-get install  \
     python3.12       \
     python3.12-venv
 
