@@ -1,8 +1,13 @@
-@import url('/assets/fonts/HelveticaNeueLTPro/helvetica.css');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue&family=JetBrains+Mono:wght@400;800&family=Roboto:wght@100&display=swap');
 
 body {
-    font-family: 'Helvetica Neue LT Pro', arial, serif;
+    font-family: 'JetBrains Mono', monospace;
     --main-color: dodgerblue;
+}
+
+body > * {
+    width: 800px;
+    margin: auto;
 }
 
 a {

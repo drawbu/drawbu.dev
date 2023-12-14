@@ -11,6 +11,11 @@
   <link href="/assets/mainpage.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-  <h1>Clément</h1>
+  <header>
+    <h1>Clément</h1>
+  </header>
+  <main hx-get="/get-profile" hx-trigger="load">
+    <p>Loading...</p>
+  </main>
 </body>
 </html>
