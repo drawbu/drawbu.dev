@@ -15,7 +15,7 @@ RUN venv/bin/pip install -r requirements.txt
 
 CMD venv/bin/gunicorn                              \
     -k uvicorn.workers.UvicornWorker \
-    --workers 3                           \
+    --workers 1                           \
     --bind unix:/pool/process/server.sock \
     -m 007                                \
     wsgi:app
