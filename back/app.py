@@ -1,18 +1,20 @@
 import os
-
+from typing import Optional
 from urllib.request import urlretrieve
 from urllib.error import URLError
 
 import markdown
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from starlette.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
+from dotenv import dotenv_values
 
 
-app = FastAPI()
-templates = Jinja2Templates(directory="./front/templates")
 
 ENV = dotenv_values(".env")
+
+app = FastAPI()
+templates = Jinja2Templates(directory="./front")
 
 
 @app.get("/get-profile")
@@ -28,10 +30,22 @@ async def get_profile():
     return HTMLResponse(content)
 
 
-@app.get("/{path:path}")
-async def static_files(path: str):
+def get_file(path: str) -> Optional[str]:
     if os.path.isfile(f"./front/{path}"):
-        return FileResponse(f"./front/{path}")
+        return f"{path}"
     if os.path.isfile(f"./front/{path}/index.html"):
-        return FileResponse(f"./front/{path}/index.html")
-    return HTMLResponse("404 not found.")
+        return f"{path}/index.html"
+    return None
+
+
+@app.get("/{path:path}")
+async def static_files(request: Request, path: str):
+    file = get_file(path)
+    if not file:
+        return HTMLResponse("404 not found")
+    if file.endswith(".html"):
+        return templates.TemplateResponse(file, {
+            "request": request,
+        })
+    file = "./front/" + file
+    return FileResponse(file)
