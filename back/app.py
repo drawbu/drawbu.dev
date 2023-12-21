@@ -12,13 +12,15 @@ from fastapi.templating import Jinja2Templates
 app = FastAPI()
 templates = Jinja2Templates(directory="./front/templates")
 
-GH_PROFILE = "https://raw.githubusercontent.com/drawbu/drawbu/main/README.md"
+ENV = dotenv_values(".env")
 
 
 @app.get("/get-profile")
 async def get_profile():
+    username = ENV.get("GITHUB_PROFILE")
+    url = f"https://raw.githubusercontent.com/{username}/{username}/main/README.md"
     try:
-        filepath, _ = urlretrieve(GH_PROFILE)
+        filepath, _ = urlretrieve(url)
     except URLError as e:
         return HTMLResponse(f"An error occured: {e.reason}.")
     filepath = open(filepath).read()
