@@ -1,13 +1,13 @@
-import os
 from typing import Optional
-from urllib.request import urlretrieve
 from urllib.error import URLError
+from urllib.request import urlretrieve
+import os
 
-import markdown
-from fastapi import FastAPI, Request
-from starlette.responses import HTMLResponse, FileResponse
-from fastapi.templating import Jinja2Templates
 from dotenv import dotenv_values
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from starlette.responses import HTMLResponse, FileResponse
+import markdown
 
 
 
