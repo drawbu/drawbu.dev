@@ -9,10 +9,15 @@ from fastapi.templating import Jinja2Templates
 from starlette.responses import HTMLResponse, FileResponse
 import markdown
 
+from back.blog import BlogManager
 
 
 ENV = dotenv_values(".env")
 
+blog = BlogManager(
+    ENV.get("REPO_URL") or "",
+    ENV.get("REPO_PATH"),
+)
 app = FastAPI()
 templates = Jinja2Templates(directory="./front/templates")
 
@@ -28,6 +33,23 @@ async def homepage(request: Request):
     filepath = open(filepath).read()
     return templates.TemplateResponse("index.html", {
         "request": request,
+        "content": markdown.markdown(filepath),
+    })
+
+
+@app.get("/blog/{name}")
+async def blog_page(request: Request, name: str):
+    article = None
+    for a in blog.articles:
+        if name == a.name[:-3]:
+            article = a
+            break
+    if article is None:
+        return HTMLResponse("404 error")
+    filepath = article.open().read()
+    return templates.TemplateResponse("blog.html", {
+        "request": request,
+        "name": name,
         "content": markdown.markdown(filepath),
     })
 

@@ -1,0 +1,15 @@
+{% extends "template.html" %}
+
+{% block extra_head %}
+  <title>{{ name }} - Clément Boillot</title>
+  <link href="/assets/mainpage.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+  <header>
+    <h1>{{ name }}</h1>
+  </header>
+  <main>
+    {{ content | safe }}
+  </main>
+{% endblock %}
