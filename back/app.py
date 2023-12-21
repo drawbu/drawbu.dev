@@ -31,9 +31,16 @@ async def homepage(request: Request):
     except URLError as e:
         return HTMLResponse(f"An error occured: {e.reason}.")
     filepath = open(filepath).read()
+    content = markdown.markdown(filepath)
+
+    links = []
+    for a in blog.articles:
+        links.append(a.name[:-3])
+
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "content": markdown.markdown(filepath),
+        "content": content,
+        "links": links,
     })
 
 

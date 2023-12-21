@@ -10,6 +10,16 @@
     <h1>Clément</h1>
   </header>
   <main>
-    {{ content | safe }}
+    <section>
+      {{ content | safe }}
+    </section>
+    <section>
+      <h2>My articles:</h2>
+      <ul>
+        {% for ln in links %}
+          <li><a href="/blog/{{ ln }}">{{ ln }}</a></li>
+        {% endfor %}
+      </ul>
+    </section>
   </main>
 {% endblock %}
