@@ -3,7 +3,7 @@ from urllib.error import URLError
 from urllib.request import urlretrieve
 import os
 
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from starlette.responses import HTMLResponse, FileResponse
@@ -12,11 +12,11 @@ import markdown
 from back.blog import BlogManager
 
 
-ENV = dotenv_values(".env")
+load_dotenv()
 
 blog = BlogManager(
-    ENV.get("REPO_URL") or "",
-    ENV.get("REPO_PATH"),
+    os.getenv("REPO_URL") or "",
+    os.getenv("REPO_PATH"),
 )
 app = FastAPI()
 templates = Jinja2Templates(directory="./front/templates")
@@ -24,7 +24,7 @@ templates = Jinja2Templates(directory="./front/templates")
 
 @app.get("/")
 async def homepage(request: Request):
-    username = ENV.get("GITHUB_PROFILE")
+    username = os.getenv("GITHUB_PROFILE")
     url = f"https://raw.githubusercontent.com/{username}/{username}/main/README.md"
     try:
         filepath, _ = urlretrieve(url)
