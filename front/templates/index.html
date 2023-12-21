@@ -9,7 +9,7 @@
   <header>
     <h1>Clément</h1>
   </header>
-  <main hx-get="/get-profile" hx-trigger="load">
-    <p>Loading...</p>
+  <main>
+    {{ content | safe }}
   </main>
 {% endblock %}

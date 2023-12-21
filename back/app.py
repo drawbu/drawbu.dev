@@ -14,11 +14,11 @@ from dotenv import dotenv_values
 ENV = dotenv_values(".env")
 
 app = FastAPI()
-templates = Jinja2Templates(directory="./front")
+templates = Jinja2Templates(directory="./front/templates")
 
 
-@app.get("/get-profile")
-async def get_profile():
+@app.get("/")
+async def homepage(request: Request):
     username = ENV.get("GITHUB_PROFILE")
     url = f"https://raw.githubusercontent.com/{username}/{username}/main/README.md"
     try:
@@ -26,8 +26,10 @@ async def get_profile():
     except URLError as e:
         return HTMLResponse(f"An error occured: {e.reason}.")
     filepath = open(filepath).read()
-    content = markdown.markdown(filepath)
-    return HTMLResponse(content)
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "content": markdown.markdown(filepath),
+    })
 
 
 def get_file(path: str) -> Optional[str]:
@@ -41,7 +43,7 @@ def get_file(path: str) -> Optional[str]:
 @app.get("/{path:path}")
 async def static_files(request: Request, path: str):
     file = get_file(path)
-    if not file:
+    if not file or file.startswith("templates/"):
         return HTMLResponse("404 not found")
     if file.endswith(".html"):
         return templates.TemplateResponse(file, {
