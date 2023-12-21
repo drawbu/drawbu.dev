@@ -6,6 +6,7 @@ COPY . .
 
 RUN apt-get update
 RUN apt-get install -y \
+    git                \
     python3.11         \
     python3.11-venv
 
