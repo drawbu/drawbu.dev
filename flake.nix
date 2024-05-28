@@ -13,7 +13,7 @@
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.packages.${system};
-          packages = with pkgs; [];
+          packages = with pkgs; [templ];
         };
 
         packages = {
@@ -22,7 +22,9 @@
             name = "server";
             src = ./.;
             vendorHash = null;
-            subPackages = ["."];
+            preBuild = ''
+              ${pkgs.templ}/bin/templ generate
+            '';
           };
         };
       }
