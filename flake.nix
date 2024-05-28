@@ -14,6 +14,7 @@
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.packages.${system};
           packages = with pkgs; [templ];
+          # env.GOROOT = "${pkgs.go}/share/go";
         };
 
         packages = {

@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	app := app.App{}
-	app.Run()
+	server := app.New(8080)
+	server.Run()
 }

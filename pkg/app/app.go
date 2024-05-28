@@ -3,11 +3,17 @@ package app
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 )
 
 type App struct {
+	port int16
+}
+
+func New(port int16) *App {
+	return &App{port}
 }
 
 func (app *App) Run() {
@@ -15,6 +21,10 @@ func (app *App) Run() {
 
 	http.Handle("/", templ.Handler(component))
 
-	fmt.Println("Listening on :3000")
-	http.ListenAndServe(":3000", nil)
+	fmt.Printf("Listening on :%d\n", app.port)
+    err := http.ListenAndServe(":" + strconv.Itoa(int(app.port)), nil)
+	if err != nil {
+		fmt.Printf("Error starting server: %s\n", err)
+		return
+	}
 }
