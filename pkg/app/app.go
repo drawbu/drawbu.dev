@@ -1,30 +1,30 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
+	"os"
 	"strconv"
 
-	"github.com/a-h/templ"
+	"server/pkg/homepage"
 )
 
 type App struct {
-	port int16
-}
-
-func New(port int16) *App {
-	return &App{port}
+	Port int16
 }
 
 func (app *App) Run() {
-	component := hello("John")
+	// Routing
+	http.HandleFunc("/", homepage.Handler)
 
-	http.Handle("/", templ.Handler(component))
-
-	fmt.Printf("Listening on :%d\n", app.port)
-    err := http.ListenAndServe(":" + strconv.Itoa(int(app.port)), nil)
-	if err != nil {
-		fmt.Printf("Error starting server: %s\n", err)
-		return
+	fmt.Printf("Listening on localhost:%d\n", app.Port)
+	err := http.ListenAndServe(":"+strconv.Itoa(int(app.Port)), nil)
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Printf("server closed\n")
+	} else if err != nil {
+		fmt.Printf("error starting server: %s\n", err)
+		os.Exit(1)
 	}
+
 }

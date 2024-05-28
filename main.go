@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	server := app.New(8080)
+	server := app.App{Port: 8080}
 	server.Run()
 }
