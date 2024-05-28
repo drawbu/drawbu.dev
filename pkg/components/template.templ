@@ -1,0 +1,16 @@
+package components
+
+templ Template(body templ.Component) {
+	<html>
+		<head>
+			<title>drawbu</title>
+		</head>
+		<body>
+			@Header()
+			<div id="content">
+				@body
+			</div>
+			@Footer()
+		</body>
+	</html>
+}
