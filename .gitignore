@@ -1,0 +1,7 @@
+# Editors
+/.idea
+/.vscode
+/result
+
+# Binary
+/server
