@@ -13,7 +13,6 @@
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.packages.${system};
-          packages = with pkgs; [templ];
           # env.GOROOT = "${pkgs.go}/share/go";
         };
 
@@ -23,9 +22,10 @@
             name = "server";
             src = ./.;
             vendorHash = null;
-            ldflags = [ "-X main.assetsDir=${placeholder "out"}/share/assets" ];
+            ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
+            nativeBuildInputs = with pkgs; [templ];
             preBuild = ''
-              ${pkgs.templ}/bin/templ generate
+              templ generate
             '';
             postBuild = ''
               mkdir -p $out/share
