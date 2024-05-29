@@ -8,6 +8,5 @@ import (
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
-	component := components.Template(contact())
-	component.Render(context.Background(), w)
+	components.Template(contact()).Render(context.Background(), w)
 }

@@ -18,8 +18,8 @@ type App struct {
 
 func (app *App) Run() {
 	// Routing
-	http.HandleFunc("/contact", contact.Handler)
 	http.HandleFunc("/", homepage.Handler)
+    http.HandleFunc("/contact", contact.Handler)
 	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(app.AssetsDir))))
 
 	fmt.Printf("Listening on localhost:%d\n", app.Port)
