@@ -24,6 +24,7 @@
             vendorHash = null;
             ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
             nativeBuildInputs = with pkgs; [templ tailwindcss];
+            propagatedBuildInputs = with pkgs; [git];
             preBuild = ''
               templ generate
             '';

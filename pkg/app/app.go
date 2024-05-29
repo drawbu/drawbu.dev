@@ -15,10 +15,10 @@ type Server struct {
 }
 
 type blogInfo struct {
-	githubRepo string
-	repoPath   string
-	lastLookup int64
-	articles   []Article
+	GithubRepo string
+	RepoPath   string
+	LastLookup int64
+	Articles   []Article
 }
 
 type Article struct {
@@ -38,9 +38,14 @@ func (serv *Server) Run() {
 	}
 }
 
-func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request)) {
+func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) error) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
-		handler(serv, w, r)
+		err := handler(serv, w, r)
+		if err == nil {
+			return
+		}
+		fmt.Printf("error getting articles: %s\n", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	})
 }
 
