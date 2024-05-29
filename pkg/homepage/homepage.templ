@@ -1,5 +1,59 @@
 package homepage
 
 templ homepage() {
-	<div>Welcome to my website!</div>
+	<div id="homepage" class="flex flex-col gap-4">
+		<h1 class="text-3xl">Clément (drawbu)</h1>
+		<span class="text-xl">Student Software Engineer</span>
+		<p>
+			Pationate about computer science and programming. Your average Linux user (NixOS btw). Low level programming
+			enthusiast.
+		</p>
+		<div id="projects" class="flex flex-col gap-2">
+			<h2 class="text-2xl">Cool projects</h2>
+			<ul class="flex flex-col list-disc">
+				<li>
+					<a href="https://github.com/drawpitech/raytracer">raytracer</a>:
+					3D renderer written in C++
+				</li>
+				<li>
+					<a href="https://github.com/drawpitech/myftp">ftp</a>:
+					FTP server written in C (following RFC 959)
+				</li>
+				<li>
+					<a href="https://githuv.com/drawpitech/nm-objdump">nm-objdump</a>:
+					nm and objdump implementation in C
+				</li>
+				<li>
+					<a href="https://github.com/drawbu/strace">strace</a>:
+					strace implementation in C
+				</li>
+				<li>
+					<a href="https://github.com/drawbu/drawbu.dev">this website</a>:
+					My personal website written in Go
+				</li>
+				<li>
+					<a href="https://github.com/drawbu/waffle">waffle wm</a>:
+					half-baked window manager written in C for X11
+				</li>
+				<li>
+					<a href="https://github.com/drawbu/drawbot">drawbot</a>:
+					messaging bot written in Python for PRONOTE
+					(check out <a href="https://youtu.be/ujC3KY-P4XU?t=44">this vid</a>)
+				</li>
+			</ul>
+			<p>
+				Some these projects are part of my studies. You can check out my peronnal projects
+				<a href="https://github.com/drawbu">here</a>, and my school projects
+				<a href="https://github.com/drawpitech">here</a>.
+			</p>
+		</div>
+		<div id="contact">
+			<h2 class="text-2xl">Quick Links</h2>
+			<ul class="list-disc">
+				<li><a href="mailto:clement2104.boillot@gmail.com">Mail</a></li>
+				<li><a href="https://github.com/drawbu">GitHub</a></li>
+				<li><a href="https://social.treehouse.systems/@drawbu">Fediverse</a></li>
+			</ul>
+		</div>
+	</div>
 }

@@ -14,12 +14,14 @@ templ Template(body templ.Component) {
 			<link rel="stylesheet" href="https://cdn.xeiaso.net/static/pkg/iosevka/family.css"/>
 			<link rel="stylesheet" href="/assets/style.css"/>
 		</head>
-		<body class="mx-auto lg:max-w-5xl max-w-xl">
-			<header>
-				<a href="/">Home</a>
-				<a href="/about">Blog</a>
-				<a href="/contact">Contact</a>
-				<a href="/resume">Resume</a>
+		<body class="mx-auto lg:max-w-5xl max-w-xl flex flex-col gap-8 py-4 px-4">
+			<header class="flex gap-2">
+				<a href="/">~</a>
+				<a href="/about">blog</a>
+				<a href="/contact">contact</a>
+				<a href="/resume">resume</a>
+				<a href="https://github.com/drawbu">github</a>
+				<a href="https://linkedin.com/in/clément-boillot">linkedin</a>
 			</header>
 			<main>
 				@body
