@@ -23,8 +23,13 @@
             name = "server";
             src = ./.;
             vendorHash = null;
+            ldflags = [ "-X main.assetsDir=${placeholder "out"}/share/assets" ];
             preBuild = ''
               ${pkgs.templ}/bin/templ generate
+            '';
+            postBuild = ''
+              mkdir -p $out/share
+              cp -r assets $out/share
             '';
           };
         };

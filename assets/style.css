@@ -1,0 +1,14 @@
+body {
+    font-family: "Iosevka Aile Iaso", sans-serif;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    tab-size: 4;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+body a {
+    /* font-style: italic; */
+    text-decoration: underline;
+    color: dodgerblue;
+}

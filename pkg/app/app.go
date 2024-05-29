@@ -11,12 +11,14 @@ import (
 )
 
 type App struct {
-	Port int16
+	Port      int16
+	AssetsDir string
 }
 
 func (app *App) Run() {
 	// Routing
 	http.HandleFunc("/", homepage.Handler)
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(app.AssetsDir))))
 
 	fmt.Printf("Listening on localhost:%d\n", app.Port)
 	err := http.ListenAndServe(":"+strconv.Itoa(int(app.Port)), nil)

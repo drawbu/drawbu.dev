@@ -1,16 +1,40 @@
 package components
 
+import (
+	"time"
+	"strconv"
+)
+
 templ Template(body templ.Component) {
 	<html>
 		<head>
 			<title>drawbu</title>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+			<link rel="stylesheet" href="https://cdn.xeiaso.net/static/pkg/iosevka/family.css"/>
+			<link rel="stylesheet" href="/assets/style.css"/>
 		</head>
-		<body>
-			@Header()
-			<div id="content">
+		<body class="mx-auto lg:max-w-5xl max-w-xl">
+			<header>
+				<a href="/">Home</a>
+				<a href="/about">Blog</a>
+				<a href="/contact">Contact</a>
+				<a href="/resume">Resume</a>
+			</header>
+			<main>
 				@body
-			</div>
-			@Footer()
+			</main>
+			<footer>
+				<p>
+					Copyright 2023-{ strconv.Itoa(time.Now().Year()) }
+					<a href="https://github.com/drawbu">drawbu (Clément Boillot)</a>. Any and all opinions listed here are my
+					own and not representative of any of my employers, past, future, and/or present.
+				</p>
+				<p>
+					Served by me, with site version 00000000, source code available
+					<a href="https://github.com/drawbu/drawbu.dev">here</a>.
+				</p>
+			</footer>
 		</body>
 	</html>
 }
