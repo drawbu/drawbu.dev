@@ -23,13 +23,13 @@
             src = ./.;
             vendorHash = null;
             ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
-            nativeBuildInputs = with pkgs; [templ];
+            nativeBuildInputs = with pkgs; [templ tailwindcss];
             preBuild = ''
               templ generate
             '';
             postBuild = ''
-              mkdir -p $out/share
-              cp -r assets $out/share
+              mkdir -p $out/share/assets
+              tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
             '';
           };
         };

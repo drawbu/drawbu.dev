@@ -1,14 +1,12 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
     font-family: "Iosevka Aile Iaso", sans-serif;
-    font-feature-settings: normal;
-    font-variation-settings: normal;
-    tab-size: 4;
-    font-size: 1.125rem;
-    line-height: 1.75rem;
+    @apply text-lg
 }
 
-body a {
-    /* font-style: italic; */
-    text-decoration: underline;
-    color: dodgerblue;
+a {
+    @apply text-blue-500 underline;
 }
