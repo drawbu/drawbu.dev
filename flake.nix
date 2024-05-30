@@ -8,12 +8,20 @@
     inputs.utils.lib.eachDefaultSystem (
       system: let
         pkgs = import inputs.nixpkgs {inherit system;};
+
+        rundev = pkgs.writeShellScriptBin "rundev" ''
+          templ generate                                                 && \
+          mkdir -p /tmp/drawbu.dev                                       && \
+          tailwindcss -i ./assets/style.css -o /tmp/drawbu.dev/style.css && \
+          go build -ldflags="-X 'main.assetsDir=/tmp/drawbu.dev'"        && \
+          ./server
+        '';
       in {
         formatter = pkgs.alejandra;
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.packages.${system};
-          # env.GOROOT = "${pkgs.go}/share/go";
+          packages = [rundev];
         };
 
         packages = {
