@@ -1,7 +1,16 @@
 package blog
 
-templ blog() {
+import "server/pkg/app"
+
+templ blog(articles []app.Article) {
 	<div class="flex flex-col gap-4">
 		<h2 class="text-3xl">Blog</h2>
+		<ul>
+			for _, article := range articles {
+				<li>
+					<a href={ templ.URL(article.URI) }>{ article.Title }</a>
+				</li>
+			}
+		</ul>
 	</div>
 }

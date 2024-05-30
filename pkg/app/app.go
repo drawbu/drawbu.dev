@@ -27,6 +27,7 @@ type Article struct {
 	Title string
 	Date  string
 	Path  string
+	URI   string
 }
 
 func (serv *Server) Run() {
@@ -47,7 +48,7 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 			return
 		}
 		fmt.Printf("error getting articles: %s\n", err)
-        components.Template(components.Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
+		components.Template(components.Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
 	})
 }
 
