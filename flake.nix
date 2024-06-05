@@ -24,24 +24,23 @@
           packages = [rundev];
         };
 
-        packages = {
-          default = self.packages.${system}.server;
-          server = pkgs.buildGoModule {
-            name = "server";
-            src = ./.;
-            vendorHash = null;
-            ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
-            nativeBuildInputs = with pkgs; [templ tailwindcss];
-            propagatedBuildInputs = with pkgs; [git];
-            preBuild = ''
-              templ generate
-            '';
-            postBuild = ''
-              mkdir -p $out/share/assets
-              tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
-            '';
-          };
+        packages.server = pkgs.buildGoModule {
+          name = "server";
+          src = ./.;
+          vendorHash = null;
+          ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
+          nativeBuildInputs = with pkgs; [templ tailwindcss];
+          propagatedBuildInputs = with pkgs; [git];
+          preBuild = ''
+            templ generate
+          '';
+          postBuild = ''
+            mkdir -p $out/share/assets
+            tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
+          '';
         };
+
+        defaultPackage = self.packages.${system}.server;
       }
     );
 }
