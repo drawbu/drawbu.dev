@@ -16,7 +16,7 @@ import (
 	"app/pkg/components"
 )
 
-type Handler struct{
+type Handler struct {
 	GithubRepo string
 	RepoPath   string
 	LastLookup time.Time
@@ -31,7 +31,7 @@ type article struct {
 	Content []byte
 }
 
-func (h* Handler) Render (serv *app.Server, w http.ResponseWriter, r *http.Request) error {
+func (h *Handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	if r.URL.Path == "/blog" || r.URL.Path == "/blog/" {
 		return components.Template(blog(h.Articles)).Render(context.Background(), w)
 	}
@@ -43,36 +43,35 @@ func (h* Handler) Render (serv *app.Server, w http.ResponseWriter, r *http.Reque
 	return components.Template(articleShow(a)).Render(context.Background(), w)
 }
 
-
-func (h* Handler) FetchArticles() {
-    ticker := time.NewTicker(1 * time.Hour)
-    h.fetch()
-    for range ticker.C {
-        h.fetch()
-    }
+func (h *Handler) FetchArticles() {
+	ticker := time.NewTicker(1 * time.Hour)
+	h.fetch()
+	for range ticker.C {
+		h.fetch()
+	}
 }
 
-func (h* Handler) fetch() {
+func (h *Handler) fetch() {
 	if h.RepoPath == "" {
 		h.GithubRepo = "https://github.com/drawbu/Notes"
 		path, err := cloneRepo(h.GithubRepo)
 		if err != nil {
-            fmt.Println(err)
+			fmt.Println(err)
 			return
 		}
 		h.RepoPath = path
 		h.Articles = getArticles(h.RepoPath, h.RepoPath)
-        return
+		return
 	}
 
-    fmt.Printf("Pulling from %s\n", h.RepoPath)
-    err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    h.LastLookup = time.Now()
-    h.Articles = getArticles(h.RepoPath, h.RepoPath)
+	fmt.Printf("Pulling from %s\n", h.RepoPath)
+	err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	h.LastLookup = time.Now()
+	h.Articles = getArticles(h.RepoPath, h.RepoPath)
 }
 
 func findArticle(articles []article, path string) (article, error) {
@@ -87,13 +86,17 @@ func findArticle(articles []article, path string) (article, error) {
 func cloneRepo(repo string) (string, error) {
 	// Set path
 	dirname := os.TempDir()
+	err := os.Mkdir(dirname, 0777)
+	if err != nil && !os.IsExist(err) {
+		return "", err
+	}
 	if !strings.HasSuffix(dirname, "/") {
 		dirname += "/"
 	}
 	dirname += "drawbu-blog"
 
 	// Check if path exists
-	_, err := os.Stat(dirname)
+	_, err = os.Stat(dirname)
 	if err == nil {
 		err = os.RemoveAll(dirname)
 		if err != nil {
@@ -103,7 +106,8 @@ func cloneRepo(repo string) (string, error) {
 
 	// Clone
 	fmt.Printf("Cloning to %s\n", dirname)
-	err = exec.Command("git", "clone", repo, dirname).Run()
+	out, err := exec.Command("git", "clone", repo, dirname).CombinedOutput()
+	fmt.Println(string(out))
 	if err != nil {
 		return "", errors.New("git: " + err.Error())
 	}
