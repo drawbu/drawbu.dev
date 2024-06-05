@@ -12,8 +12,8 @@ import (
 
 	"github.com/gomarkdown/markdown"
 
-	"server/pkg/app"
-	"server/pkg/components"
+	"app/pkg/app"
+	"app/pkg/components"
 )
 
 type Handler struct{

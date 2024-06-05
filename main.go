@@ -1,11 +1,11 @@
 package main
 
 import (
-	"server/pkg/app"
-	"server/pkg/routes/blog"
-	"server/pkg/routes/contact"
-	"server/pkg/routes/homepage"
-	"server/pkg/routes/resume"
+	"app/pkg/app"
+	"app/pkg/routes/blog"
+	"app/pkg/routes/contact"
+	"app/pkg/routes/homepage"
+	"app/pkg/routes/resume"
 )
 
 // These values may be set by the build script via the LDFLAGS argument

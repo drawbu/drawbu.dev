@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"server/pkg/components"
+	"app/pkg/components"
 	"strconv"
 )
 
@@ -19,7 +19,7 @@ func (serv *Server) Run() {
 	fmt.Printf("Listening on localhost:%d\n", serv.Port)
 	err := http.ListenAndServe(":"+strconv.Itoa(int(serv.Port)), nil)
 	if errors.Is(err, http.ErrServerClosed) {
-		fmt.Printf("server closed\n")
+		fmt.Printf("app closed\n")
 	} else if err != nil {
 		fmt.Printf("error starting server: %s\n", err)
 		os.Exit(1)

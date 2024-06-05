@@ -14,9 +14,9 @@
           mkdir -p /tmp/drawbu.dev                                       && \
           tailwindcss -i ./assets/style.css -o /tmp/drawbu.dev/style.css && \
           go build -ldflags="-X 'main.assetsDir=/tmp/drawbu.dev'"        && \
-          ./server
+          ./app
         '';
-      in {
+      in rec {
         formatter = pkgs.alejandra;
 
         devShell = pkgs.mkShell {
@@ -24,8 +24,8 @@
           packages = [rundev];
         };
 
-        packages.server = pkgs.buildGoModule {
-          name = "server";
+        packages.app = pkgs.buildGoModule {
+          name = "app";
           src = ./.;
           vendorHash = null;
           ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
@@ -40,7 +40,7 @@
           '';
         };
 
-        defaultPackage = self.packages.${system}.server;
+        defaultPackage = packages.app;
       }
     );
 }

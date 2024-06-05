@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"server/pkg/app"
-	"server/pkg/components"
+	"app/pkg/app"
+	"app/pkg/components"
 )
 
 func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
