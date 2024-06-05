@@ -29,8 +29,7 @@
           src = ./.;
           vendorHash = null;
           ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
-          nativeBuildInputs = with pkgs; [templ tailwindcss];
-          propagatedBuildInputs = with pkgs; [git];
+          nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
           preBuild = ''
             templ generate
           '';
@@ -38,6 +37,11 @@
             mkdir -p $out/share/assets
             tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
           '';
+          postInstall = ''
+            wrapProgram $out/bin/app \
+              --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [ git ])}
+          '';
+
         };
 
         defaultPackage = packages.app;
