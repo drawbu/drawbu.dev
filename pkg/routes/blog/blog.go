@@ -32,26 +32,6 @@ type article struct {
 }
 
 func (h* Handler) Render (serv *app.Server, w http.ResponseWriter, r *http.Request) error {
-	if h.RepoPath == "" {
-		h.GithubRepo = "https://github.com/drawbu/Notes"
-		path, err := cloneRepo(h.GithubRepo)
-		if err != nil {
-			return err
-		}
-		h.RepoPath = path
-		h.Articles = getArticles(h.RepoPath, h.RepoPath)
-	}
-
-	if time.Since(h.LastLookup).Hours() > 4 {
-		fmt.Printf("Pulling from %s\n", h.RepoPath)
-		err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
-		if err != nil {
-			return err
-		}
-		h.LastLookup = time.Now()
-		h.Articles = getArticles(h.RepoPath, h.RepoPath)
-	}
-
 	if r.URL.Path == "/blog" || r.URL.Path == "/blog/" {
 		return components.Template(blog(h.Articles)).Render(context.Background(), w)
 	}
@@ -61,6 +41,38 @@ func (h* Handler) Render (serv *app.Server, w http.ResponseWriter, r *http.Reque
 		return err
 	}
 	return components.Template(articleShow(a)).Render(context.Background(), w)
+}
+
+
+func (h* Handler) FetchArticles() {
+    ticker := time.NewTicker(1 * time.Hour)
+    h.fetch()
+    for range ticker.C {
+        h.fetch()
+    }
+}
+
+func (h* Handler) fetch() {
+	if h.RepoPath == "" {
+		h.GithubRepo = "https://github.com/drawbu/Notes"
+		path, err := cloneRepo(h.GithubRepo)
+		if err != nil {
+            fmt.Println(err)
+			return
+		}
+		h.RepoPath = path
+		h.Articles = getArticles(h.RepoPath, h.RepoPath)
+        return
+	}
+
+    fmt.Printf("Pulling from %s\n", h.RepoPath)
+    err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    h.LastLookup = time.Now()
+    h.Articles = getArticles(h.RepoPath, h.RepoPath)
 }
 
 func findArticle(articles []article, path string) (article, error) {
