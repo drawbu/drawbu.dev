@@ -25,10 +25,11 @@ type blogInfo struct {
 }
 
 type Article struct {
-	Title string
-	Date  string
-	Path  string
-	URI   string
+	Title   string
+	Date    string
+	Path    string
+	URI     string
+	Content []byte
 }
 
 func (serv *Server) Run() {

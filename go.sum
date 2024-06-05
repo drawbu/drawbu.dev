@@ -1,2 +1,4 @@
 github.com/a-h/templ v0.2.707 h1:T1Gkd2ugbRglZ9rYw/VBchWOSZVKmetDbBkm4YubM7U=
 github.com/a-h/templ v0.2.707/go.mod h1:5cqsugkq9IerRNucNsI4DEamdHPsoGMQy99DzydLhM8=
+github.com/gomarkdown/markdown v0.0.0-20240419095408-642f0ee99ae2 h1:yEt5djSYb4iNtmV9iJGVday+i4e9u6Mrn5iP64HH5QM=
+github.com/gomarkdown/markdown v0.0.0-20240419095408-642f0ee99ae2/go.mod h1:JDGcbDT52eL4fju3sZ4TeHGsQwhG9nbDV21aMyhwPoA=

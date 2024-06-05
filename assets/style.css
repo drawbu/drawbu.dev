@@ -10,3 +10,11 @@ html {
 a {
     @apply text-blue-500 underline;
 }
+
+.article pre {
+    @apply bg-gray-200 p-1 rounded text-sm;
+}
+
+.article pre > code {
+    font-family: "Iosevka Aile Iaso", sans-serif;
+}
