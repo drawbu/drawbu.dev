@@ -24,24 +24,39 @@
           packages = [rundev];
         };
 
-        packages.app = pkgs.buildGoModule {
-          name = "app";
-          src = ./.;
-          vendorHash = null;
-          ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
-          nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
-          preBuild = ''
-            templ generate
-          '';
-          postBuild = ''
-            mkdir -p $out/share/assets
-            tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
-          '';
-          postInstall = ''
-            wrapProgram $out/bin/app \
-              --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [ git ])}
-          '';
+        packages = {
+          app = pkgs.buildGoModule {
+            name = "app";
+            src = ./.;
+            vendorHash = null;
+            ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
+            nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
+            preBuild = ''
+              templ generate
+            '';
+            postBuild = ''
+              mkdir -p $out/share/assets
+              tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
+            '';
+            postInstall = ''
+              wrapProgram $out/bin/app \
+                --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [ git ])}
+            '';
+          };
 
+          docker = pkgs.dockerTools.buildImage {
+            name = "drawbu.dev";
+            tag = "latest";
+            copyToRoot = pkgs.buildEnv {
+              name = "image-root";
+              paths = [ packages.app ];
+              pathsToLink = [ "/bin" ];
+            };
+            config = {
+              Cmd = ["app"];
+              Env = ["SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"]; # wut
+            };
+          };
         };
 
         defaultPackage = packages.app;
