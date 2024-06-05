@@ -1,9 +1,0 @@
-gunicorn==20.1.0
-fastapi==0.95.0
-uvicorn[standard]==0.21.1
-starlette~=0.26.1
-pydantic~=1.10.7
-Jinja2==3.1.2
-Pygments==2.17.2
-Markdown==3.5.1
-python-dotenv==1.0.0

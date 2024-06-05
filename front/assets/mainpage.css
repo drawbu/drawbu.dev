@@ -1,8 +1,0 @@
-#episodes-list li {
-    list-style-type: "- ";
-    transition-duration: .5s;
-}
-
-#episodes-list li:hover {
-    margin-left: 1em;
-}
