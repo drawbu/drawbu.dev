@@ -1,8 +1,6 @@
 package blog
 
-import "server/pkg/app"
-
-templ blog(articles []app.Article) {
+templ blog(articles []article) {
 	<div class="flex flex-col gap-4">
 		<h2 class="text-3xl">Blog</h2>
 		<ul>

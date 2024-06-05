@@ -8,28 +8,11 @@ import (
 	"os"
 	"server/pkg/components"
 	"strconv"
-	"time"
 )
 
 type Server struct {
 	Port      int16
 	AssetsDir string
-	Blog      blogInfo
-}
-
-type blogInfo struct {
-	GithubRepo string
-	RepoPath   string
-	LastLookup time.Time
-	Articles   []Article
-}
-
-type Article struct {
-	Title   string
-	Date    string
-	Path    string
-	URI     string
-	Content []byte
 }
 
 func (serv *Server) Run() {

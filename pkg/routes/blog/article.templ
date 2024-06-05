@@ -1,8 +1,6 @@
 package blog
 
-import "server/pkg/app"
-
-templ article(article app.Article) {
+templ articleShow(article article) {
 	<div class="flex flex-col gap-4">
 		<h2 class="text-3xl">{ article.Title }</h2>
         <a href="/blog" class="text-blue-500">Back to blog</a>

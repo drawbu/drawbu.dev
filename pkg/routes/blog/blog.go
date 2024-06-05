@@ -16,45 +16,60 @@ import (
 	"server/pkg/components"
 )
 
-func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
-	if serv.Blog.RepoPath == "" {
-		serv.Blog.GithubRepo = "https://github.com/drawbu/Notes"
-		path, err := cloneRepo(serv.Blog.GithubRepo)
+type Handler struct{
+	GithubRepo string
+	RepoPath   string
+	LastLookup time.Time
+	Articles   []article
+}
+
+type article struct {
+	Title   string
+	Date    string
+	Path    string
+	URI     string
+	Content []byte
+}
+
+func (h* Handler) Render (serv *app.Server, w http.ResponseWriter, r *http.Request) error {
+	if h.RepoPath == "" {
+		h.GithubRepo = "https://github.com/drawbu/Notes"
+		path, err := cloneRepo(h.GithubRepo)
 		if err != nil {
 			return err
 		}
-		serv.Blog.RepoPath = path
-		serv.Blog.Articles = getArticles(serv.Blog.RepoPath, serv.Blog.RepoPath)
+		h.RepoPath = path
+		h.Articles = getArticles(h.RepoPath, h.RepoPath)
 	}
 
-	if time.Since(serv.Blog.LastLookup).Hours() > 4 {
-		fmt.Printf("Pulling from %s\n", serv.Blog.RepoPath)
-		err := exec.Command("git", "-C", serv.Blog.RepoPath, "pull").Run()
+	if time.Since(h.LastLookup).Hours() > 4 {
+		fmt.Printf("Pulling from %s\n", h.RepoPath)
+		err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
 		if err != nil {
 			return err
 		}
-		serv.Blog.LastLookup = time.Now()
-		serv.Blog.Articles = getArticles(serv.Blog.RepoPath, serv.Blog.RepoPath)
+		h.LastLookup = time.Now()
+		h.Articles = getArticles(h.RepoPath, h.RepoPath)
 	}
 
 	if r.URL.Path == "/blog" || r.URL.Path == "/blog/" {
-		return components.Template(blog(serv.Blog.Articles)).Render(context.Background(), w)
+		return components.Template(blog(h.Articles)).Render(context.Background(), w)
 	}
 
-	a, err := findArticle(serv.Blog.Articles, r.URL.Path)
+	a, err := findArticle(h.Articles, r.URL.Path)
 	if err != nil {
 		return err
 	}
-	return components.Template(article(a)).Render(context.Background(), w)
+	return components.Template(articleShow(a)).Render(context.Background(), w)
 }
 
-func findArticle(articles []app.Article, path string) (app.Article, error) {
+func findArticle(articles []article, path string) (article, error) {
 	for _, a := range articles {
 		if a.URI == path {
 			return a, nil
 		}
 	}
-	return app.Article{}, errors.New("Article not found")
+	return article{}, errors.New("Article not found")
 }
 
 func cloneRepo(repo string) (string, error) {
@@ -83,13 +98,13 @@ func cloneRepo(repo string) (string, error) {
 	return dirname, nil
 }
 
-func getArticles(path string, basepath string) []app.Article {
+func getArticles(path string, basepath string) []article {
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		return []app.Article{}
+		return []article{}
 	}
 
-	articles := []app.Article{}
+	articles := []article{}
 	for _, entry := range entries {
 		if strings.HasPrefix(entry.Name(), ".") {
 			continue
@@ -103,7 +118,7 @@ func getArticles(path string, basepath string) []app.Article {
 			name := strings.TrimSuffix(entry.Name(), ".md")
 			uri := "/blog" + strings.TrimPrefix(path, basepath) + "/" + name
 			filepath := path + "/" + entry.Name()
-			articles = append(articles, app.Article{Title: name, Path: filepath, URI: uri, Content: getContent(filepath)})
+			articles = append(articles, article{Title: name, Path: filepath, URI: uri, Content: getContent(filepath)})
 		}
 	}
 	return articles
@@ -115,6 +130,6 @@ func getContent(path string) []byte {
 		return []byte{}
 	}
 	// create markdown parser with extensions
-    renderer := newCustomizedRender()
+	renderer := newCustomizedRender()
 	return markdown.ToHTML(file, nil, renderer)
 }

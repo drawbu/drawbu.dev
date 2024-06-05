@@ -17,7 +17,8 @@ func main() {
 	serv := app.Server{Port: 8080, AssetsDir: assetsDir}
 
 	serv.AddRoute("/", homepage.Handler)
-	serv.AddRoute("/blog/{article...}", blog.Handler)
+    blog := blog.Handler{}
+	serv.AddRoute("/blog/{article...}", blog.Render)
 	serv.AddRoute("/contact", contact.Handler)
 	serv.AddRoute("/resume", resume.Handler)
 	serv.ServeRoute("/assets/", "/assets/")
