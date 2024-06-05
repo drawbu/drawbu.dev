@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"server/pkg/app"
 	"server/pkg/components"
@@ -24,16 +25,14 @@ func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 		serv.Blog.Articles = getArticles(serv.Blog.RepoPath, serv.Blog.RepoPath)
 	}
 
-	if serv.Blog.LastLookup >= 60*60 {
+	if time.Since(serv.Blog.LastLookup).Hours() > 4 {
 		fmt.Printf("Pulling from %s\n", serv.Blog.RepoPath)
-		err := exec.Command("git", "pull", serv.Blog.RepoPath).Run()
+		err := exec.Command("git", "-C", serv.Blog.RepoPath, "pull").Run()
 		if err != nil {
 			return err
 		}
-		serv.Blog.LastLookup = 0 // 1 hour
+		serv.Blog.LastLookup = time.Now()
 		serv.Blog.Articles = getArticles(serv.Blog.RepoPath, serv.Blog.RepoPath)
-	} else {
-		serv.Blog.LastLookup++
 	}
 
 	if r.URL.Path == "/blog" || r.URL.Path == "/blog/" {

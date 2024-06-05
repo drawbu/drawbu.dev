@@ -8,6 +8,7 @@ import (
 	"os"
 	"server/pkg/components"
 	"strconv"
+	"time"
 )
 
 type Server struct {
@@ -19,7 +20,7 @@ type Server struct {
 type blogInfo struct {
 	GithubRepo string
 	RepoPath   string
-	LastLookup int64
+	LastLookup time.Time
 	Articles   []Article
 }
 
