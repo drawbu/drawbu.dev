@@ -1,12 +1,12 @@
 package app
 
 import (
+	"app/pkg/components"
 	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"os"
-	"app/pkg/components"
 	"strconv"
 )
 
@@ -30,10 +30,11 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		err := handler(serv, w, r)
 		if err == nil {
-			return
+			fmt.Printf("[%s] %s\n", r.Method, r.RequestURI)
+		} else {
+			fmt.Printf("[%s] %s: %s\n", r.Method, r.RequestURI, err)
+			components.Template(components.Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
 		}
-		fmt.Printf("error getting articles: %s\n", err)
-		components.Template(components.Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
 	})
 }
 
