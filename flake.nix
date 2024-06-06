@@ -50,7 +50,6 @@
             copyToRoot = pkgs.buildEnv {
               name = "image-root";
               paths = [ packages.app ];
-              pathsToLink = [ "/bin" ];
             };
             config = {
               Cmd = ["app"];
