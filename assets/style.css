@@ -25,3 +25,11 @@ h3, h4, h5, h6 {
 #article pre {
     @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll;
 }
+
+#article p > code {
+    @apply bg-gray-200 px-1;
+}
+
+#article blockquote > p {
+    @apply ml-4 flex flex-col text-gray-500;
+}
