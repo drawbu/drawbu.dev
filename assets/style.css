@@ -10,6 +10,6 @@ a {
     @apply text-blue-500 underline;
 }
 
-.article pre {
+#article pre {
     @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll;
 }

@@ -8,10 +8,10 @@ import (
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
 
-	"github.com/alecthomas/chroma"
-	"github.com/alecthomas/chroma/formatters/html"
-	"github.com/alecthomas/chroma/lexers"
-	"github.com/alecthomas/chroma/styles"
+	"github.com/alecthomas/chroma/v2"
+	"github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/alecthomas/chroma/v2/lexers"
+	"github.com/alecthomas/chroma/v2/styles"
 )
 
 var (
@@ -25,7 +25,7 @@ func init() {
 		panic("couldn't create html formatter")
 	}
 
-	highlightStyle = styles.MonokaiLight
+    highlightStyle = styles.Get("github")
 }
 
 // based on https://github.com/alecthomas/chroma/blob/master/quick/quick.go
