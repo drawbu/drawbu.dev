@@ -36,8 +36,17 @@ The project depends on Go (with a few mods), Tailwind and Templ.
 
 ## Docker
 
-Yeah you have no way to avoid Nix hehe
+You can use `docker-compose` to run the project using pre-built images:
+```docker-compose
+services:
+  drawbu.dev:
+    image: ghcr.io/drawbu/drawbu.dev:latest
+    ports:
+        - "8080:8080"
+```
 
+I don't have a real Dockerfile, so if you want to build the image, you'll need
+to use Nix
 ```bash
 nix build .#docker
 docker load < result
