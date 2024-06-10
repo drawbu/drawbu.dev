@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
@@ -27,16 +28,16 @@ type article struct {
 	Title   string
 	Date    string
 	Path    string
-	URI     string
 	Content []byte
 }
 
 func (h *Handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
-	if r.URL.Path == "/blog" || r.URL.Path == "/blog/" {
+	article_name, err := url.PathUnescape(r.PathValue("article"))
+    if err != nil || article_name == "" {
 		return components.Template(blog(h.Articles)).Render(context.Background(), w)
 	}
 
-	a, err := findArticle(h.Articles, r.URL.Path)
+	a, err := findArticle(h.Articles, "/" + article_name)
 	if err != nil {
 		return err
 	}
@@ -60,7 +61,7 @@ func (h *Handler) fetch() {
 			return
 		}
 		h.RepoPath = path
-		h.Articles = getArticles(h.RepoPath, h.RepoPath)
+		h.Articles = getArticles("", h.RepoPath)
 		return
 	}
 
@@ -76,7 +77,7 @@ func (h *Handler) fetch() {
 
 func findArticle(articles []article, path string) (article, error) {
 	for _, a := range articles {
-		if a.URI == path {
+		if a.Path == path {
 			return a, nil
 		}
 	}
@@ -114,8 +115,9 @@ func cloneRepo(repo string) (string, error) {
 	return dirname, nil
 }
 
-func getArticles(path string, basepath string) []article {
-	entries, err := os.ReadDir(path)
+func getArticles(path string, repo_path string) []article {
+    fullpath := repo_path + "/" + path
+	entries, err := os.ReadDir(fullpath)
 	if err != nil {
 		return []article{}
 	}
@@ -127,20 +129,22 @@ func getArticles(path string, basepath string) []article {
 		}
 
 		if entry.IsDir() {
-			articles = append(articles, getArticles(path+"/"+entry.Name(), basepath)...)
+			articles = append(articles, getArticles(path+"/"+entry.Name(), repo_path)...)
 			continue
 		}
 		if strings.HasSuffix(entry.Name(), ".md") {
 			name := strings.TrimSuffix(entry.Name(), ".md")
-			uri := "/blog" + strings.TrimPrefix(path, basepath) + "/" + name
-			filepath := path + "/" + entry.Name()
-			articles = append(articles, article{Title: name, Path: filepath, URI: uri, Content: getContent(filepath)})
+			articles = append(articles, article{
+				Title: name,
+                Path: path + "/" + name,
+                Content: parseMarkdownArticle(fullpath + "/" + entry.Name()),
+            })
 		}
 	}
 	return articles
 }
 
-func getContent(path string) []byte {
+func parseMarkdownArticle(path string) []byte {
 	file, err := os.ReadFile(path)
 	if err != nil {
 		return []byte{}
