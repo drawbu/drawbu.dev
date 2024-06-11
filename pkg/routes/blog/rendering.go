@@ -20,12 +20,12 @@ var (
 )
 
 func init() {
-	htmlFormatter = html.New(html.Standalone(true), html.TabWidth(2), html.WithLineNumbers(true))
+	htmlFormatter = html.New(html.TabWidth(2), html.WithLineNumbers(true))
 	if htmlFormatter == nil {
 		panic("couldn't create html formatter")
 	}
 
-    highlightStyle = styles.Get("github")
+    highlightStyle = styles.Get("catppuccin-mocha")
 }
 
 // based on https://github.com/alecthomas/chroma/blob/master/quick/quick.go
