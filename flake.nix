@@ -47,6 +47,7 @@
           docker = pkgs.dockerTools.buildImage {
             name = "drawbu.dev";
             tag = "latest";
+            created = "now";
             copyToRoot = pkgs.buildEnv {
               name = "image-root";
               paths = [ packages.app ];
