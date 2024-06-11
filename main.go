@@ -10,13 +10,13 @@ import (
 
 // These values may be set by the build script via the LDFLAGS argument
 var (
-	assetsDir string = "./assets/"
+	staticDir string = "./static/"
 )
 
 func main() {
 	serv := app.Server{Port: 8080}
 
-	home := homepage.Handler{Assets: assetsDir}
+	home := homepage.Handler{StaticDir: staticDir}
 	serv.AddRoute("GET /", home.Render)
 	blog := blog.Handler{}
 	go blog.FetchArticles()

@@ -10,10 +10,11 @@
         pkgs = import inputs.nixpkgs {inherit system;};
 
         rundev = pkgs.writeShellScriptBin "rundev" ''
-          templ generate                                                 && \
-          mkdir -p /tmp/drawbu.dev                                       && \
-          tailwindcss -i ./assets/style.css -o /tmp/drawbu.dev/style.css && \
-          go build -ldflags="-X 'main.assetsDir=/tmp/drawbu.dev'"        && \
+          rm -rf /tmp/drawbu.dev                                                && \
+          cp -r static /tmp/drawbu.dev                                          && \
+          tailwindcss -i /tmp/drawbu.dev/style.css -o /tmp/drawbu.dev/style.css && \
+          templ generate                                                        && \
+          go build -ldflags="-X 'main.staticDir=/tmp/drawbu.dev'"               && \
           ./app
         '';
       in rec {
@@ -29,14 +30,15 @@
             name = "app";
             src = ./.;
             vendorHash = null;
-            ldflags = ["-X main.assetsDir=${placeholder "out"}/share/assets"];
+            ldflags = ["-X main.staticDir=${placeholder "out"}/share/static"];
             nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
             preBuild = ''
               templ generate
             '';
             postBuild = ''
-              mkdir -p $out/share/assets
-              tailwindcss -i ./assets/style.css -o $out/share/assets/style.css
+              mkdir -p $out/share
+              cp -r static $out/share
+              tailwindcss -i $out/share/static/style.css -o $out/share/static/style.css
             '';
             postInstall = ''
               wrapProgram $out/bin/app \
