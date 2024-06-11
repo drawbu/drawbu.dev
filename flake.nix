@@ -40,7 +40,7 @@
             '';
             postInstall = ''
               wrapProgram $out/bin/app \
-                --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [ git ])}
+                --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [git])}
             '';
           };
 
@@ -50,12 +50,9 @@
             created = "now";
             copyToRoot = pkgs.buildEnv {
               name = "image-root";
-              paths = [ packages.app ];
+              paths = [packages.app] ++ (with pkgs.dockerTools; [caCertificates]);
             };
-            config = {
-              Cmd = ["app"];
-              Env = ["SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"]; # wut
-            };
+            config.Cmd = ["app"];
           };
         };
 
