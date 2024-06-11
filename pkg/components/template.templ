@@ -6,12 +6,20 @@ import (
 )
 
 templ Template(body templ.Component) {
-	<html>
+    <!DOCTYPE html>
+	<html lang="en">
 		<head>
 			<title>drawbu</title>
 			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
 			<link rel="stylesheet" href="https://cdn.xeiaso.net/static/pkg/iosevka/family.css"/>
 			<link rel="stylesheet" href="/assets/style.css"/>
+            <meta name="viewport" content="width=device-width">
+			<meta
+				name="description"
+				content="Clément 'drawbu' Boillot personnal website. I'm a
+                french student software engineer, and I write about programming,
+                tech, and random thoughts."
+			/>
 		</head>
 		<body class="mx-auto lg:max-w-5xl max-w-xl flex flex-col gap-8 py-4 px-4">
 			<header class="flex gap-2">
@@ -19,8 +27,8 @@ templ Template(body templ.Component) {
 				<a href="/blog">blog</a>
 				<a href="/contact">contact</a>
 				<a href="/resume">resume</a>
-				<a href="https://github.com/drawbu">github</a>
-				<a href="https://linkedin.com/in/clément-boillot">linkedin</a>
+				<a href="https://github.com/drawbu" target="_blank" rel="noopener">github</a>
+				<a href="https://linkedin.com/in/clément-boillot" target="_blank" rel="noopener">linkedin</a>
 			</header>
 			<main>
 				@body
@@ -28,12 +36,12 @@ templ Template(body templ.Component) {
 			<footer>
 				<p>
 					Copyright 2023-{ strconv.Itoa(time.Now().Year()) }
-					<a href="https://github.com/drawbu">drawbu (Clément Boillot)</a>. Any and all opinions listed here are my
-					own and not representative of any of my employers, past, future, and/or present.
+					<a href="https://github.com/drawbu" target="_blank" rel="noopener">drawbu (Clément Boillot)</a>. Any and all
+					opinions listed here are my own and not representative of any of my employers, past, future, and/or present.
 				</p>
 				<p>
 					Served by me, with site version 00000000, source code available
-					<a href="https://github.com/drawbu/drawbu.dev">here</a>.
+					<a href="https://github.com/drawbu/drawbu.dev" target="_blank" rel="noopener">here</a>.
 				</p>
 			</footer>
 		</body>
