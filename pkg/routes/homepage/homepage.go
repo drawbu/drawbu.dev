@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"app/pkg/app"
-	"app/pkg/components"
 )
 
 type Handler struct {
@@ -17,7 +16,7 @@ type Handler struct {
 func (h *Handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	switch strings.ToLower(r.URL.Path) {
 	case "/":
-		return components.Template(homepage()).Render(context.Background(), w)
+		return serv.Template(homepage()).Render(context.Background(), w)
 	default:
 		if h.staticHandler == nil {
 			h.staticHandler = http.FileServer(http.Dir(h.StaticDir))

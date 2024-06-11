@@ -11,10 +11,11 @@ import (
 // These values may be set by the build script via the LDFLAGS argument
 var (
 	staticDir string = "./static/"
+	prod      string
 )
 
 func main() {
-	serv := app.Server{Port: 8080}
+	serv := app.Server{Port: 8080, Prod: prod == "true"}
 
 	home := homepage.Handler{StaticDir: staticDir}
 	serv.AddRoute("GET /", home.Render)

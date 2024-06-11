@@ -14,7 +14,6 @@ import (
 	"github.com/gomarkdown/markdown"
 
 	"app/pkg/app"
-	"app/pkg/components"
 )
 
 type Handler struct {
@@ -33,14 +32,14 @@ type article struct {
 func (h *Handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
 	if err != nil || article_name == "" {
-		return components.Template(blog(h.Articles)).Render(context.Background(), w)
+		return serv.Template(blog(h.Articles)).Render(context.Background(), w)
 	}
 
 	a, err := findArticle(h.Articles, "/"+article_name)
 	if err != nil {
 		return err
 	}
-	return components.Template(articleShow(a)).Render(context.Background(), w)
+	return serv.Template(articleShow(a)).Render(context.Background(), w)
 }
 
 func (h *Handler) FetchArticles() {

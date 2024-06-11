@@ -1,7 +1,6 @@
 package app
 
 import (
-	"app/pkg/components"
 	"context"
 	"errors"
 	"fmt"
@@ -12,6 +11,7 @@ import (
 
 type Server struct {
 	Port      int16
+    Prod      bool
 }
 
 func (serv *Server) Run() {
@@ -32,7 +32,7 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 			fmt.Printf("[%s] %s\n", r.Method, r.RequestURI)
 		} else {
 			fmt.Printf("[%s] %s: %s\n", r.Method, r.RequestURI, err)
-			components.Template(components.Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
+			serv.Template(Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
 		}
 	})
 }

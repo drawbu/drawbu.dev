@@ -9,13 +9,22 @@
       system: let
         pkgs = import inputs.nixpkgs {inherit system;};
 
-        rundev = pkgs.writeShellScriptBin "rundev" ''
+        devbuild = pkgs.writeShellScriptBin "devbuild" ''
           rm -rf /tmp/drawbu.dev                                                && \
           cp -r static /tmp/drawbu.dev                                          && \
           tailwindcss -i /tmp/drawbu.dev/style.css -o /tmp/drawbu.dev/style.css && \
           templ generate                                                        && \
           go build -ldflags="-X 'main.staticDir=/tmp/drawbu.dev'"               && \
           ./app
+        '';
+        rundev = pkgs.writeShellScriptBin "rundev" ''
+          if [ -z "$1" ]; then
+            exec ${devbuild}/bin/devbuild
+          fi
+          if [ "$1" = "--watch" ]; then
+            exec ${pkgs.fd}/bin/fd | ${pkgs.entr}/bin/entr -c -r ${devbuild}/bin/devbuild
+          fi
+          echo "Usage: $0 [--watch]"
         '';
       in rec {
         formatter = pkgs.alejandra;
@@ -30,7 +39,10 @@
             name = "app";
             src = ./.;
             vendorHash = null;
-            ldflags = ["-X main.staticDir=${placeholder "out"}/share/static"];
+            ldflags = [
+              "-X main.staticDir=${placeholder "out"}/share/static"
+              "-X main.prod=true"
+            ];
             nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
             preBuild = ''
               templ generate

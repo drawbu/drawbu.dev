@@ -1,11 +1,11 @@
-package components
+package app
 
 import (
 	"time"
 	"strconv"
 )
 
-templ Template(body templ.Component) {
+templ (app *Server) Template(body templ.Component) {
     <!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -20,6 +20,9 @@ templ Template(body templ.Component) {
                 french student software engineer, and I write about programming,
                 tech, and random thoughts."
 			/>
+            if !app.Prod {
+                <script src="/autorefresh.js"></script>
+            }
 		</head>
 		<body class="mx-auto lg:max-w-5xl max-w-xl flex flex-col gap-8 py-4 px-4">
 			<header class="flex gap-2">
