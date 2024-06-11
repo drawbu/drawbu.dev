@@ -20,7 +20,6 @@ import (
 type Handler struct {
 	GithubRepo string
 	RepoPath   string
-	LastLookup time.Time
 	Articles   []article
 }
 
@@ -33,11 +32,11 @@ type article struct {
 
 func (h *Handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
-    if err != nil || article_name == "" {
+	if err != nil || article_name == "" {
 		return components.Template(blog(h.Articles)).Render(context.Background(), w)
 	}
 
-	a, err := findArticle(h.Articles, "/" + article_name)
+	a, err := findArticle(h.Articles, "/"+article_name)
 	if err != nil {
 		return err
 	}
@@ -61,18 +60,16 @@ func (h *Handler) fetch() {
 			return
 		}
 		h.RepoPath = path
-		h.Articles = getArticles("", h.RepoPath)
-		return
+	} else {
+		fmt.Printf("Pulling from %s\n", h.RepoPath)
+		err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 	}
 
-	fmt.Printf("Pulling from %s\n", h.RepoPath)
-	err := exec.Command("git", "-C", h.RepoPath, "pull").Run()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	h.LastLookup = time.Now()
-	h.Articles = getArticles(h.RepoPath, h.RepoPath)
+	h.Articles = getArticles("", h.RepoPath)
 }
 
 func findArticle(articles []article, path string) (article, error) {
@@ -116,7 +113,7 @@ func cloneRepo(repo string) (string, error) {
 }
 
 func getArticles(path string, repo_path string) []article {
-    fullpath := repo_path + "/" + path
+	fullpath := repo_path + "/" + path
 	entries, err := os.ReadDir(fullpath)
 	if err != nil {
 		return []article{}
@@ -135,10 +132,10 @@ func getArticles(path string, repo_path string) []article {
 		if strings.HasSuffix(entry.Name(), ".md") {
 			name := strings.TrimSuffix(entry.Name(), ".md")
 			articles = append(articles, article{
-				Title: name,
-                Path: path + "/" + name,
-                Content: parseMarkdownArticle(fullpath + "/" + entry.Name()),
-            })
+				Title:   name,
+				Path:    path + "/" + name,
+				Content: parseMarkdownArticle(fullpath + "/" + entry.Name()),
+			})
 		}
 	}
 	return articles
