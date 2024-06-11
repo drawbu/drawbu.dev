@@ -14,15 +14,15 @@ var (
 )
 
 func main() {
-	serv := app.Server{Port: 8080, AssetsDir: assetsDir}
+	serv := app.Server{Port: 8080}
 
-	serv.AddRoute("GET /", homepage.Handler)
+	home := homepage.Handler{Assets: assetsDir}
+	serv.AddRoute("GET /", home.Render)
 	blog := blog.Handler{}
 	go blog.FetchArticles()
 	serv.AddRoute("GET /blog/{article...}", blog.Render)
 	serv.AddRoute("GET /contact", contact.Handler)
 	serv.AddRoute("GET /resume", resume.Handler)
-	serv.ServeRoute("GET /assets/", "/assets/")
 
 	serv.Run()
 }

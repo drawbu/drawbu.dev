@@ -12,7 +12,6 @@ import (
 
 type Server struct {
 	Port      int16
-	AssetsDir string
 }
 
 func (serv *Server) Run() {
@@ -36,8 +35,4 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 			components.Template(components.Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
 		}
 	})
-}
-
-func (serv *Server) ServeRoute(route string, path string) {
-	http.Handle(route, http.StripPrefix(path, http.FileServer(http.Dir(serv.AssetsDir))))
 }
