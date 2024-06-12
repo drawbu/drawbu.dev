@@ -62,7 +62,7 @@
             created = "now";
             copyToRoot = pkgs.buildEnv {
               name = "image-root";
-              paths = [packages.app] ++ (with pkgs.dockerTools; [caCertificates]);
+              paths = [packages.app];
             };
             config.Cmd = ["app"];
           };
