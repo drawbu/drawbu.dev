@@ -1,6 +1,7 @@
 package blog
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"net/http"
@@ -8,9 +9,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/gomarkdown/markdown"
-
 	"app/pkg/app"
+
+	chroma "github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 )
 
 func Handler(articlesDir string) *handler {
@@ -86,7 +89,20 @@ func parseMarkdownArticle(path string) []byte {
 	if err != nil {
 		return []byte{}
 	}
-	// create markdown parser with extensions
-	renderer := newCustomizedRender()
-	return markdown.ToHTML(file, nil, renderer)
+
+	markdown := goldmark.New(
+		goldmark.WithExtensions(
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("catppuccin-mocha"),
+				highlighting.WithFormatOptions(
+					chroma.WithLineNumbers(true),
+				),
+			),
+		),
+	)
+	var buf bytes.Buffer
+	if err := markdown.Convert(file, &buf); err != nil {
+		return []byte{}
+	}
+	return buf.Bytes()
 }
