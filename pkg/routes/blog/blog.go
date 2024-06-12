@@ -7,53 +7,61 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strings"
+	"time"
 
 	"app/pkg/app"
 
 	chroma "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
-	"github.com/yuin/goldmark-meta"
+	meta "github.com/yuin/goldmark-meta"
 	"github.com/yuin/goldmark/parser"
 )
 
 func Handler(articlesDir string) *handler {
+	articles := make(map[string]article)
+	for _, a := range getArticles(articlesDir) {
+		articles[a.Title] = a
+	}
 	return &handler{
-		articles: getArticles(articlesDir),
+		articles: articles,
 	}
 }
 
 type handler struct {
-	articles []article
+	articles map[string]article
 }
 
 type article struct {
 	Title   string
-	Date    string
+	Date    time.Time
 	Content []byte
 }
 
 func (h *handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
 	if err != nil || article_name == "" {
-		return serv.Template(blog(h.articles)).Render(context.Background(), w)
+		return serv.Template(blog(getSortedArticles(h.articles))).Render(context.Background(), w)
 	}
 
-	a, err := findArticle(h.articles, article_name)
-	if err != nil {
-		return err
+	a, ok := h.articles[article_name]
+	if !ok {
+		return errors.New("Article not found")
 	}
-	return serv.Template(articleShow(*a)).Render(context.Background(), w)
+	return serv.Template(articleShow(a)).Render(context.Background(), w)
 }
 
-func findArticle(articles []article, title string) (*article, error) {
+func getSortedArticles(articles map[string]article) []article {
+	result := make([]article, 0, len(articles))
 	for _, a := range articles {
-		if a.Title == title {
-			return &a, nil
-		}
+		result = append(result, a)
 	}
-	return nil, errors.New("Article not found")
+	sort.SliceStable(result, func(i, j int) bool {
+		return result[i].Date.After(result[j].Date)
+	})
+	return result
 }
 
 func getArticles(path string) []article {
@@ -104,9 +112,10 @@ func parseMarkdownArticle(path string) (*article, error) {
 	}
 
 	metaData := meta.Get(context)
+	date, err := time.Parse("2006-01-02", metaData["date"].(string))
 	return &article{
 		Title:   metaData["title"].(string),
-		Date:    metaData["date"].(string),
+		Date:    date,
 		Content: buf.Bytes(),
 	}, nil
 }
