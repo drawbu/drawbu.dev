@@ -6,7 +6,7 @@ templ blog(articles []article) {
 		<ul>
 			for _, article := range articles {
 				<li>
-					<a href={ "/blog/" + templ.URL(article.Path) }>{ article.Title }</a>
+					<a href={ "/blog/" + templ.URL(article.Title) }>{ article.Title }</a>
 				</li>
 			}
 		</ul>

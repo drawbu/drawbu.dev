@@ -1,7 +1,9 @@
-# How to setup a server block with Nginx + systemd on Ubuntu with HTTPS
-#serveradmin
+---
+title: How to setup a server block with Nginx + systemd on Ubuntu with HTTPS
+date: 2023-05-02
+---
 
-In this guide, we are going to use the keyword for you to replace. There will be `REPOSITORY ` and `DOMAIN_NAME` to replace. 
+In this guide, we are going to use the keyword for you to replace. There will be `REPOSITORY ` and `DOMAIN_NAME` to replace.
 
 > For example:
 > - REPOSITORY: https://github.com/Sigmanificient/1l.is
@@ -9,8 +11,8 @@ In this guide, we are going to use the keyword for you to replace. There will be
 
 We'll use Nginx to host the webservers, and CertBot to setup the SSL certificate (free) to access the website using HTTPS.
 
-## Setup 
-To install Nginx on Ubuntu, just follow [this cool guide](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04) from Digital Ocean, 
+## Setup
+To install Nginx on Ubuntu, just follow [this cool guide](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-20-04) from Digital Ocean,
 Ubuntu they explain everything.
 
 Then install [CertBot](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal) to enable HTTPS certification.
@@ -34,7 +36,7 @@ sudo git clone REPOSITORY /var/www/DOMAIN_NAME
 
 ## Create the systemd service
 > **Note**
-> If you are serving a static website, this step is not needed. 
+> If you are serving a static website, this step is not needed.
 
 The systemd service is a file that is going to generate the .sock file. This file is going to be the middle-man between your web server and Nginx.
 
@@ -81,9 +83,9 @@ If it's a static site:
 ```
 server {
     listen 80;
-    listen [::]:80;	
+    listen [::]:80;
 	server_name DOMAIN_NAME;
-	
+
 	root /var/www/DOMAIN_NAME/html;
 	index index.html index.htm index.nginx-debian.html;
 
@@ -96,7 +98,7 @@ If it's a dynamic (here using a unix socket)
 ```
 server {
     listen 80;
-    listen [::]:80;	
+    listen [::]:80;
 	server_name DOMAIN_NAME;
 
     location / {
@@ -106,14 +108,14 @@ server {
 }
 ```
 
-Add to Nginx, verify, and restart 
+Add to Nginx, verify, and restart
 ```bash
 sudo ln -s /etc/nginx/sites-available/DOMAIN_NAME /etc/nginx/sites-enabled/  # Enable the Nginx block
 sudo nginx -t  # Check Nginx config
 sudo systemctl restart nginx  # Restart Nginx
 ```
 
-Add HTTPS : 
+Add HTTPS :
 ```bash
 sudo certbot --nginx
 ```

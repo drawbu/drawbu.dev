@@ -14,11 +14,13 @@ import (
 	chroma "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
+	"github.com/yuin/goldmark-meta"
+	"github.com/yuin/goldmark/parser"
 )
 
 func Handler(articlesDir string) *handler {
 	return &handler{
-		articles: getArticles("", articlesDir),
+		articles: getArticles(articlesDir),
 	}
 }
 
@@ -29,7 +31,6 @@ type handler struct {
 type article struct {
 	Title   string
 	Date    string
-	Path    string
 	Content []byte
 }
 
@@ -39,25 +40,24 @@ func (h *handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Reques
 		return serv.Template(blog(h.articles)).Render(context.Background(), w)
 	}
 
-	a, err := findArticle(h.articles, "/"+article_name)
+	a, err := findArticle(h.articles, article_name)
 	if err != nil {
 		return err
 	}
-	return serv.Template(articleShow(a)).Render(context.Background(), w)
+	return serv.Template(articleShow(*a)).Render(context.Background(), w)
 }
 
-func findArticle(articles []article, path string) (article, error) {
+func findArticle(articles []article, title string) (*article, error) {
 	for _, a := range articles {
-		if a.Path == path {
-			return a, nil
+		if a.Title == title {
+			return &a, nil
 		}
 	}
-	return article{}, errors.New("Article not found")
+	return nil, errors.New("Article not found")
 }
 
-func getArticles(path string, repo_path string) []article {
-	fullpath := repo_path + "/" + path
-	entries, err := os.ReadDir(fullpath)
+func getArticles(path string) []article {
+	entries, err := os.ReadDir(path)
 	if err != nil {
 		return []article{}
 	}
@@ -69,40 +69,44 @@ func getArticles(path string, repo_path string) []article {
 		}
 
 		if entry.IsDir() {
-			articles = append(articles, getArticles(path+"/"+entry.Name(), repo_path)...)
+			articles = append(articles, getArticles(path+"/"+entry.Name())...)
 			continue
 		}
 		if strings.HasSuffix(entry.Name(), ".md") {
-			name := strings.TrimSuffix(entry.Name(), ".md")
-			articles = append(articles, article{
-				Title:   name,
-				Path:    path + "/" + name,
-				Content: parseMarkdownArticle(fullpath + "/" + entry.Name()),
-			})
+			a, err := parseMarkdownArticle(path + "/" + entry.Name())
+			if err == nil || a != nil {
+				articles = append(articles, *a)
+			}
 		}
 	}
 	return articles
 }
 
-func parseMarkdownArticle(path string) []byte {
+func parseMarkdownArticle(path string) (*article, error) {
 	file, err := os.ReadFile(path)
 	if err != nil {
-		return []byte{}
+		return nil, err
 	}
 
 	markdown := goldmark.New(
 		goldmark.WithExtensions(
 			highlighting.NewHighlighting(
 				highlighting.WithStyle("catppuccin-mocha"),
-				highlighting.WithFormatOptions(
-					chroma.WithLineNumbers(true),
-				),
+				highlighting.WithFormatOptions(chroma.WithLineNumbers(true)),
 			),
+			meta.Meta,
 		),
 	)
 	var buf bytes.Buffer
-	if err := markdown.Convert(file, &buf); err != nil {
-		return []byte{}
+	context := parser.NewContext()
+	if err := markdown.Convert(file, &buf, parser.WithContext(context)); err != nil {
+		return nil, err
 	}
-	return buf.Bytes()
+
+	metaData := meta.Get(context)
+	return &article{
+		Title:   metaData["title"].(string),
+		Date:    metaData["date"].(string),
+		Content: buf.Bytes(),
+	}, nil
 }

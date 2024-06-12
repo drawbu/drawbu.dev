@@ -1,7 +1,11 @@
+---
+title: How I deploy Nix + Docker
+date: 2024-06-09
+---
+
 Hello everyone :)
 
 I recently remade my 'portfolio' website for the fifth time and since I use and Nix as a package manager and to declare my developement environnements, it only made sense to me to avec a Nix flake at the root of my project. For the last year, it has become a habit that I have on every project I have so I never again have a problem with the dependencies I used in a old project.
-:q
 
 I used Go + Templ to do a simple website and once I have been done I question how to deploy such a project. I'm a Nix advocate. I really like to have the possibility to define a declarative development environment with all the dependencies I need to build and dev a project. And of course curiosity hehe.
 

@@ -25,3 +25,9 @@ github.com/yuin/goldmark/util
 # github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 ## explicit; go 1.13
 github.com/yuin/goldmark-highlighting/v2
+# github.com/yuin/goldmark-meta v1.1.0
+## explicit; go 1.17
+github.com/yuin/goldmark-meta
+# gopkg.in/yaml.v2 v2.3.0
+## explicit
+gopkg.in/yaml.v2

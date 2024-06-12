@@ -1,5 +1,7 @@
-# How to install NixOS on a Contabo Server
-#nixos #serveradmin 
+---
+title: How to install NixOS on a Contabo Server
+date: 2023-08-02
+---
 
 In this guide, we'll see how to setup NixOS on a Ubuntu 22.04 Contabo VPS.
 For this, we'll use a script known as [NixOS-Infect](https://github.com/elitak/nixos-infect) that is gonna replace the installed OS with NixOS.
@@ -14,7 +16,7 @@ To connect to the server, just run:
 ```bash
 ssh root@vps_ip_address
 ```
-Then, enter the password you set when you purchased it, or the one you received by mail. If none of them works, don't worry you can set it again on Contabo's website. 
+Then, enter the password you set when you purchased it, or the one you received by mail. If none of them works, don't worry you can set it again on Contabo's website.
 
 ## Setup SSH Key
 The root user will not have a password when nixos-infect runs to completion. To enable root login, you **must** have an SSH key configured.
