@@ -41,6 +41,7 @@
             vendorHash = null;
             ldflags = [
               "-X main.staticDir=${placeholder "out"}/share/static"
+              "-X main.articlesDir=${placeholder "out"}/share/articles"
               "-X main.prod=true"
             ];
             nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
@@ -49,12 +50,9 @@
             '';
             postBuild = ''
               mkdir -p $out/share
-              cp -r static $out/share
+              cp -r articles $out/share/articles
+              cp -r static $out/share/static
               tailwindcss -i $out/share/static/style.css -o $out/share/static/style.css
-            '';
-            postInstall = ''
-              wrapProgram $out/bin/app \
-                --prefix PATH : ${pkgs.lib.makeBinPath (with pkgs; [git])}
             '';
           };
 

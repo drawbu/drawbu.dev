@@ -10,8 +10,9 @@ import (
 
 // These values may be set by the build script via the LDFLAGS argument
 var (
-	staticDir string = "./static/"
-	prod      string
+	staticDir   string = "./static/"
+	articlesDir string = "./articles/"
+	prod        string
 )
 
 func main() {
@@ -19,8 +20,7 @@ func main() {
 
 	home := homepage.Handler{StaticDir: staticDir}
 	serv.AddRoute("GET /", home.Render)
-	blog := blog.Handler{}
-	go blog.FetchArticles()
+	blog := blog.Handler(articlesDir)
 	serv.AddRoute("GET /blog/{article...}", blog.Render)
 	serv.AddRoute("GET /contact", contact.Handler)
 	serv.AddRoute("GET /resume", resume.Handler)
