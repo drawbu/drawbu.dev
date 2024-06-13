@@ -10,21 +10,19 @@
         pkgs = import inputs.nixpkgs {inherit system;};
 
         devbuild = pkgs.writeShellScriptBin "devbuild" ''
-          rm -rf /tmp/drawbu.dev                                                && \
-          cp -r static /tmp/drawbu.dev                                          && \
-          tailwindcss -i /tmp/drawbu.dev/style.css -o /tmp/drawbu.dev/style.css && \
-          templ generate                                                        && \
-          go build -ldflags="-X 'main.staticDir=/tmp/drawbu.dev'"               && \
+          tailwindcss -i static/style.css -o static/generated.css && \
+          templ generate                                          && \
+          go build                                                && \
           ./app
         '';
         rundev = pkgs.writeShellScriptBin "rundev" ''
           if [ -z "$1" ]; then
-            exec ${devbuild}/bin/devbuild
+            ${devbuild}/bin/devbuild
+          elif [ "$1" = "--watch" ]; then
+            ${pkgs.fd}/bin/fd | ${pkgs.entr}/bin/entr -c -r ${devbuild}/bin/devbuild
+          else
+            echo "Usage: $0 [--watch]"
           fi
-          if [ "$1" = "--watch" ]; then
-            exec ${pkgs.fd}/bin/fd | ${pkgs.entr}/bin/entr -c -r ${devbuild}/bin/devbuild
-          fi
-          echo "Usage: $0 [--watch]"
         '';
       in rec {
         formatter = pkgs.alejandra;
@@ -39,20 +37,11 @@
             name = "app";
             src = ./.;
             vendorHash = null;
-            ldflags = [
-              "-X main.staticDir=${placeholder "out"}/share/static"
-              "-X main.articlesDir=${placeholder "out"}/share/articles"
-            ];
             tags = ["production"];
             nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
             preBuild = ''
               templ generate
-            '';
-            postBuild = ''
-              mkdir -p $out/share
-              cp -r articles $out/share/articles
-              cp -r static $out/share/static
-              tailwindcss -i $out/share/static/style.css -o $out/share/static/style.css
+              tailwindcss -i static/style.css -o static/generated.css
             '';
           };
 

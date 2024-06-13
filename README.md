@@ -18,10 +18,9 @@ easy to build and run.
 nix build
 
 # Build the project (using go)
-cp -r static /tmp/drawbu.dev
-tailwindcss -i /tmp/drawbu.dev/style.css -o /tmp/drawbu.dev/style.css
+tailwindcss -i static/style.css -o static/generated.css
 templ generate
-go build -ldflags="-X 'main.staticDir=/tmp/drawbu.dev'"
+go build
 ```
 
 

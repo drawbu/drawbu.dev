@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
+	"io/fs"
 	"net/http"
 	"net/url"
-	"os"
 	"sort"
 	"strings"
 	"time"
 
+	"app/articles"
 	"app/pkg/app"
 
 	chroma "github.com/alecthomas/chroma/v2/formatters/html"
@@ -20,18 +22,12 @@ import (
 	"github.com/yuin/goldmark/parser"
 )
 
-func Handler(articlesDir string) *handler {
-	articles := make(map[string]article)
-	for _, a := range getArticles(articlesDir) {
-		articles[a.Title] = a
-	}
-	return &handler{
-		articles: articles,
-	}
-}
+var Articles = make(map[string]article)
 
-type handler struct {
-	articles map[string]article
+func init() {
+	for _, a := range getArticles(articles.Articles) {
+		Articles[a.Title] = a
+	}
 }
 
 type article struct {
@@ -40,13 +36,13 @@ type article struct {
 	Content []byte
 }
 
-func (h *handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
+func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
 	if err != nil || article_name == "" {
-		return serv.Template(blog(getSortedArticles(h.articles))).Render(context.Background(), w)
+		return serv.Template(blog(getSortedArticles(Articles))).Render(context.Background(), w)
 	}
 
-	a, ok := h.articles[article_name]
+	a, ok := Articles[article_name]
 	if !ok {
 		return errors.New("Article not found")
 	}
@@ -64,35 +60,42 @@ func getSortedArticles(articles map[string]article) []article {
 	return result
 }
 
-func getArticles(path string) []article {
-	entries, err := os.ReadDir(path)
+func getArticles(filesystem fs.ReadDirFS) []article {
+	entries, err := filesystem.ReadDir(".")
 	if err != nil {
+		fmt.Printf("Error reading directory: %s\n", err)
 		return []article{}
 	}
 
-	articles := []article{}
+	result := []article{}
 	for _, entry := range entries {
-		if strings.HasPrefix(entry.Name(), ".") {
+		if strings.HasPrefix(entry.Name(), ".") ||
+			!entry.Type().IsRegular() ||
+			!strings.HasSuffix(entry.Name(), ".md") {
 			continue
 		}
 
-		if entry.IsDir() {
-			articles = append(articles, getArticles(path+"/"+entry.Name())...)
+		file, err := filesystem.Open(entry.Name())
+		if err != nil {
+			fmt.Printf("Error opening file: %s\n", err)
 			continue
 		}
-		if strings.HasSuffix(entry.Name(), ".md") {
-			a, err := parseMarkdownArticle(path + "/" + entry.Name())
-			if err == nil || a != nil {
-				articles = append(articles, *a)
-			}
+		a, err := parseMarkdownArticle(file)
+		if err == nil || a != nil {
+			result = append(result, *a)
 		}
 	}
-	return articles
+	return result
 }
 
-func parseMarkdownArticle(path string) (*article, error) {
-	file, err := os.ReadFile(path)
+func parseMarkdownArticle(file fs.File) (*article, error) {
+	info, err := file.Stat()
 	if err != nil {
+		fmt.Printf("Error getting file info: %s\n", err)
+		return nil, err
+	}
+	content := make([]byte, info.Size())
+	if _, err = file.Read(content); err != nil {
 		return nil, err
 	}
 
@@ -107,7 +110,7 @@ func parseMarkdownArticle(path string) (*article, error) {
 	)
 	var buf bytes.Buffer
 	context := parser.NewContext()
-	if err := markdown.Convert(file, &buf, parser.WithContext(context)); err != nil {
+	if err = markdown.Convert(content, &buf, parser.WithContext(context)); err != nil {
 		return nil, err
 	}
 
