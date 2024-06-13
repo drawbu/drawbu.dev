@@ -8,15 +8,14 @@ import (
 	"app/pkg/routes/resume"
 )
 
-// These values may be set by the build script via the LDFLAGS argument
+// These values may be set by the build script via the ldflags argument
 var (
 	staticDir   string = "./static/"
 	articlesDir string = "./articles/"
-	prod        string
 )
 
 func main() {
-	serv := app.Server{Port: 8080, Prod: prod == "true"}
+	serv := app.Server{Port: 8080}
 
 	home := root.Handler(staticDir)
 	serv.AddRoute("GET /", home.Render)

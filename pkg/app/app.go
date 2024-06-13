@@ -11,7 +11,6 @@ import (
 
 type Server struct {
 	Port int16
-	Prod bool
 }
 
 func (serv *Server) Run() {

@@ -42,8 +42,8 @@
             ldflags = [
               "-X main.staticDir=${placeholder "out"}/share/static"
               "-X main.articlesDir=${placeholder "out"}/share/articles"
-              "-X main.prod=true"
             ];
+            tags = ["production"];
             nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
             preBuild = ''
               templ generate
