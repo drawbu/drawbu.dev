@@ -18,7 +18,7 @@ var (
 func main() {
 	serv := app.Server{Port: 8080, Prod: prod == "true"}
 
-	home := homepage.Handler{StaticDir: staticDir}
+	home := homepage.Handler(staticDir)
 	serv.AddRoute("GET /", home.Render)
 	blog := blog.Handler(articlesDir)
 	serv.AddRoute("GET /blog/{article...}", blog.Render)

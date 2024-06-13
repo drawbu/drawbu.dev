@@ -8,20 +8,22 @@ import (
 	"app/pkg/app"
 )
 
-type Handler struct {
-	StaticDir     string
-	staticHandler http.Handler
+type handler struct {
+	staticDir http.Handler
 }
 
-func (h *Handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
+func Handler(staticDir string) *handler {
+	return &handler{
+		staticDir: http.FileServer(http.Dir(staticDir)),
+	}
+}
+
+func (h *handler) Render(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
 	switch strings.ToLower(r.URL.Path) {
 	case "/":
 		return serv.Template(homepage()).Render(context.Background(), w)
 	default:
-		if h.staticHandler == nil {
-			h.staticHandler = http.FileServer(http.Dir(h.StaticDir))
-		}
-		h.staticHandler.ServeHTTP(w, r)
+		h.staticDir.ServeHTTP(w, r)
 		return nil
 	}
 }
