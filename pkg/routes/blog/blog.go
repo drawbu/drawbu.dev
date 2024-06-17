@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"io/fs"
 	"net/http"
 	"net/url"
@@ -15,6 +14,7 @@ import (
 	"app/articles"
 	"app/pkg/app"
 
+    "github.com/charmbracelet/log"
 	chroma "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
@@ -63,7 +63,7 @@ func getSortedArticles(articles map[string]article) []article {
 func getArticles(filesystem fs.ReadDirFS) []article {
 	entries, err := filesystem.ReadDir(".")
 	if err != nil {
-		fmt.Printf("Error reading directory: %s\n", err)
+        log.Warn("Error reading directory:", "reason", err)
 		return []article{}
 	}
 
@@ -77,7 +77,7 @@ func getArticles(filesystem fs.ReadDirFS) []article {
 
 		file, err := filesystem.Open(entry.Name())
 		if err != nil {
-			fmt.Printf("Error opening file: %s\n", err)
+			log.Warn("Error opening file:", "reason", err)
 			continue
 		}
 		a, err := parseMarkdownArticle(file)
@@ -91,7 +91,7 @@ func getArticles(filesystem fs.ReadDirFS) []article {
 func parseMarkdownArticle(file fs.File) (*article, error) {
 	info, err := file.Stat()
 	if err != nil {
-		fmt.Printf("Error getting file info: %s\n", err)
+		log.Warn("Error getting file info:", "reason", err)
 		return nil, err
 	}
 	content := make([]byte, info.Size())
