@@ -1,4 +1,5 @@
-let previousHash = 0;
+let previousHash = undefined;
+let previousUrl = window.location.pathname
 let ran = false;
 
 const encoder = new TextEncoder();
@@ -11,12 +12,15 @@ async function getHash(data) {
 }
 
 setInterval(() => {
+  if (window.location.pathname !== previousUrl) {
+    previousHash = undefined;
+  }
+
   fetch(window.location.pathname)
     .then(response => response.text())
     .then(getHash)
     .then(hash => {
-      if (!ran) {
-        ran = true;
+      if (previousHash === undefined) {
         previousHash = hash
         return;
       }
