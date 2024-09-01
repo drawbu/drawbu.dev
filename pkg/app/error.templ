@@ -10,6 +10,6 @@ templ Error(message string, path string) {
 			<p>Error: <span class="text-red-400">{ message }</span></p>
 			<p>Try refreshing the page or contact the administrator if the problem persists.</p>
 		</div>
-		<p>Go back to the <a href="/">home page</a>.</p>
+		<p>Go back to the <span>@NavButton("/", "home page")</span>.</p>
 	</div>
 }

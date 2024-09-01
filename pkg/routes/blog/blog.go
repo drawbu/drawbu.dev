@@ -2,7 +2,6 @@ package blog
 
 import (
 	"bytes"
-	"context"
 	"errors"
 	"io/fs"
 	"net/http"
@@ -14,8 +13,9 @@ import (
 	"app/articles"
 	"app/pkg/app"
 
-    "github.com/charmbracelet/log"
+	"github.com/a-h/templ"
 	chroma "github.com/alecthomas/chroma/v2/formatters/html"
+	"github.com/charmbracelet/log"
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
@@ -36,17 +36,17 @@ type article struct {
 	Content []byte
 }
 
-func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
+func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
 	if err != nil || article_name == "" {
-		return serv.Template(blog(getSortedArticles(Articles))).Render(context.Background(), w)
+		return blog(getSortedArticles(Articles)), nil
 	}
 
 	a, ok := Articles[article_name]
 	if !ok {
-		return errors.New("Article not found")
+		return nil, errors.New("Article not found")
 	}
-	return serv.Template(articleShow(a)).Render(context.Background(), w)
+	return articleShow(a), nil
 }
 
 func getSortedArticles(articles map[string]article) []article {
@@ -63,7 +63,7 @@ func getSortedArticles(articles map[string]article) []article {
 func getArticles(filesystem fs.ReadDirFS) []article {
 	entries, err := filesystem.ReadDir(".")
 	if err != nil {
-        log.Warn("Error reading directory:", "reason", err)
+		log.Warn("Error reading directory:", "reason", err)
 		return []article{}
 	}
 

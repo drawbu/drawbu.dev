@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/a-h/templ"
 	"github.com/charmbracelet/log"
 )
 
@@ -26,15 +27,26 @@ func (serv *Server) Run() {
 	}
 }
 
-func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) error) {
+func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) (templ.Component, error)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
-		err := handler(serv, w, r)
-        req_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
+		comp, err := handler(serv, w, r)
+		req_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
+
 		if err == nil {
 			log.Info(req_fmt)
 		} else {
 			log.Warn(req_fmt, "reason", err)
-			serv.Template(Error(err.Error(), r.RequestURI)).Render(context.Background(), w)
+			comp = Error(err.Error(), r.RequestURI)
 		}
+
+		// Already served
+		if comp == nil {
+			return
+		}
+
+		if r.Header.Get("HX-Request") != "true" {
+			comp = serv.Template(comp)
+		}
+		comp.Render(context.Background(), w)
 	})
 }

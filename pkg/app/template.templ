@@ -6,29 +6,35 @@ import (
 	"app/pkg/app/dev"
 )
 
+templ NavButton(href string, text string) {
+	<a hx-get={ href } hx-trigger="click" hx-target="main" hx-swap="innerHTML" hx-replace-url="true">
+		{ text }
+	</a>
+}
+
 templ (app *Server) Template(body templ.Component) {
-    <!DOCTYPE html>
+	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<title>drawbu</title>
 			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
 			<link rel="stylesheet" href="https://cdn.xeiaso.net/static/pkg/iosevka/family.css"/>
 			<link rel="stylesheet" href="/generated.css"/>
-            <meta name="viewport" content="width=device-width">
+			<meta name="viewport" content="width=device-width"/>
 			<meta
 				name="description"
 				content="Clément 'drawbu' Boillot personnal website. I'm a
                 french student software engineer, and I write about programming,
                 tech, and random thoughts."
 			/>
-            @dev.Header
+			@dev.Header
 		</head>
 		<body class="mx-auto lg:max-w-5xl max-w-xl flex flex-col gap-8 py-4 px-4">
 			<header class="flex gap-2">
-				<a href="/">~</a>
-				<a href="/blog">blog</a>
-				<a href="/contact">contact</a>
-				<a href="/resume">resume</a>
+				@NavButton("/", "~")
+				@NavButton("/blog", "blog")
+				@NavButton("/contact", "contact")
+				@NavButton("/resume", "resume")
 				<a href="https://github.com/drawbu" target="_blank" rel="noopener">github</a>
 				<a href="https://linkedin.com/in/clément-boillot" target="_blank" rel="noopener">linkedin</a>
 			</header>

@@ -1,19 +1,20 @@
 package root
 
 import (
-	"context"
 	"net/http"
 
 	"app/pkg/app"
 	"app/static"
+
+	"github.com/a-h/templ"
 )
 
-func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) error {
+func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
 	switch r.URL.Path {
 	case "/":
-		return serv.Template(homepage()).Render(context.Background(), w)
+		return homepage(), nil
 	default:
         http.FileServerFS(static.Files).ServeHTTP(w, r)
-		return nil
+		return nil, nil
 	}
 }
