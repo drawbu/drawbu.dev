@@ -23,10 +23,9 @@ jobs:
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
     - name: Load Docker image
-      run: docker load < result
-
-    - name: Tag Docker image
-      run: docker tag drawbu.dev ghcr.io/${{ github.repository_owner }}/drawbu.dev:latest
+      run: |
+        docker load < result
+        docker tag drawbu.dev ghcr.io/${{ github.repository }}:latest
 
     - name: Push Docker image to GitHub Container Registry
-      run: docker push ghcr.io/${{ github.repository_owner }}/drawbu.dev:latest
+      run: docker push ghcr.io/${{ github.repository }}:latest
