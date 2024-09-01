@@ -22,6 +22,10 @@ h3, h4, h5, h6 {
     @apply text-xl;
 }
 
+ul {
+    @apply list-inside lg:list-outside;
+}
+
 #article pre {
     @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll;
 }

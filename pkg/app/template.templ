@@ -29,8 +29,8 @@ templ (app *Server) Template(body templ.Component) {
 			/>
 			@dev.Header
 		</head>
-		<body class="mx-auto lg:max-w-5xl max-w-xl flex flex-col gap-8 py-4 px-4">
-			<header class="flex gap-2">
+		<body class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4">
+			<header class="flex flex-wrap gap-2">
 				@NavButton("/", "~")
 				@NavButton("/blog", "blog")
 				@NavButton("/contact", "contact")
