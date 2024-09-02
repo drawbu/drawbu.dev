@@ -2,38 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "Iosevka Comfy";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/iosevka-comfy-fixed-regular.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Iosevka Comfy";
+    font-style: normal;
+    font-weight: 700;
+    src: url("/iosevka-comfy-fixed-bold.woff2") format("woff2");
+}
+
 html {
     @apply text-lg
 }
 
 a {
-    @apply text-blue-500 underline;
+    @apply text-blue-500 underline
 }
 
 h1 {
-    @apply text-3xl;
+    @apply text-3xl font-bold
 }
 
 h2 {
-    @apply text-2xl;
+    @apply text-2xl
 }
 
 h3, h4, h5, h6 {
-    @apply text-xl;
+    @apply text-xl
 }
 
 ul {
-    @apply list-inside lg:list-outside;
+    @apply list-inside lg:list-outside
 }
 
 #article pre {
-    @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll;
+    @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll
 }
 
 #article p > code {
-    @apply bg-gray-200 px-1;
+    @apply bg-gray-200 px-1
 }
 
 #article blockquote > p {
-    @apply ml-4 flex flex-col text-gray-500;
+    @apply ml-4 flex flex-col text-gray-500
 }

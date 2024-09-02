@@ -4,11 +4,11 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-      body: ['Iosevka Aile Iaso', 'sans-serif'],
-      display: ['Iosevka Aile Iaso', 'sans-serif'],
-      mono: ['Iosevka Aile Iaso', 'sans-serif'],
-      sans: ['Iosevka Aile Iaso', 'sans-serif'],
-      serif: ['Iosevka Aile Iaso', 'sans-serif'],
+      body: ['Iosevka Comfy', 'sans-serif'],
+      display: ['Iosevka Comfy', 'sans-serif'],
+      mono: ['Iosevka Comfy', 'sans-serif'],
+      sans: ['Iosevka Comfy', 'sans-serif'],
+      serif: ['Iosevka Comfy', 'sans-serif'],
     },
 
   },
