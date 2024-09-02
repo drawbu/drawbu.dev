@@ -14,13 +14,7 @@ check out the nix flake that I have for this project, it makes everything much
 easy to build and run.
 
 ```bash
-# Build the project (using nix)
-nix build
-
-# Build the project (using go)
-tailwindcss -i static/style.css -o static/generated.css
-templ generate
-go build
+nix build # Or use `nix run` directly
 ```
 
 
@@ -30,7 +24,7 @@ You have all the dependencies in the nix flake, so you can just run the
 `nix develop` command and you will have everything you need. You will have
 also available the `rundev` command for fast iteration on the project.
 
-The project depends on Go (with a few mods), Tailwind and Templ.
+The project depends on Go (with a few deps), Tailwind and Templ.
 
 
 ## Docker
@@ -45,7 +39,7 @@ services:
 ```
 
 I don't have a real Dockerfile, so if you want to build the image, you'll need
-to use Nix
+to use Nix, or just use the one built from GitHub actions.
 ```bash
 nix build .#docker
 docker load < result
