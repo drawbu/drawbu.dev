@@ -4,10 +4,12 @@
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {self, ...} @ inputs:
+  outputs =
+    { self, ... }@inputs:
     inputs.utils.lib.eachDefaultSystem (
-      system: let
-        pkgs = import inputs.nixpkgs {inherit system;};
+      system:
+      let
+        pkgs = import inputs.nixpkgs { inherit system; };
 
         devbuild = pkgs.writeShellScriptBin "devbuild" ''
           tailwindcss -i static/style.css -o static/generated.css && \
@@ -24,12 +26,13 @@
             echo "Usage: $0 [--watch]"
           fi
         '';
-      in rec {
+      in
+      rec {
         formatter = pkgs.alejandra;
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.packages.${system};
-          packages = [rundev];
+          packages = [ rundev ];
         };
 
         packages = {
@@ -37,8 +40,12 @@
             name = "app";
             src = ./.;
             vendorHash = null;
-            tags = ["production"];
-            nativeBuildInputs = with pkgs; [templ tailwindcss makeWrapper];
+            tags = [ "production" ];
+            nativeBuildInputs = with pkgs; [
+              templ
+              tailwindcss
+              makeWrapper
+            ];
             preBuild = ''
               templ generate
               tailwindcss -i static/style.css -o static/generated.css
@@ -51,20 +58,25 @@
             created = "now";
             copyToRoot = pkgs.buildEnv {
               name = "image-root";
-              paths = [packages.app];
+              paths = [ packages.app ];
             };
-            config = let
-              healthcheck = pkgs.writeShellApplication {
-                name = "healthcheck";
-                runtimeInputs = [pkgs.curl];
-                text = ''
-                  test "$(curl --fail localhost:8080/health)" = "OK"
-                '';
+            config =
+              let
+                healthcheck = pkgs.writeShellApplication {
+                  name = "healthcheck";
+                  runtimeInputs = [ pkgs.curl ];
+                  text = ''
+                    test "$(curl --fail localhost:8080/health)" = "OK"
+                  '';
+                };
+              in
+              {
+                Healthcheck.Test = [
+                  "CMD"
+                  "${pkgs.lib.getExe healthcheck}"
+                ];
+                Entrypoint = [ "app" ];
               };
-            in {
-              Healthcheck.Test = ["CMD" "${pkgs.lib.getExe healthcheck}"];
-              Entrypoint = ["app"];
-            };
           };
         };
 
