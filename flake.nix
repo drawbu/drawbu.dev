@@ -53,7 +53,18 @@
               name = "image-root";
               paths = [packages.app];
             };
-            config.Cmd = ["app"];
+            config = let
+              healthcheck = pkgs.writeShellApplication {
+                name = "healthcheck";
+                runtimeInputs = [pkgs.curl];
+                text = ''
+                  test "$(curl --fail localhost:8080/health)" = "OK"
+                '';
+              };
+            in {
+              Healthcheck.Test = ["CMD" "${pkgs.lib.getExe healthcheck}"];
+              Entrypoint = ["app"];
+            };
           };
         };
 
