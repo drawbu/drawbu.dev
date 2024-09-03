@@ -9,8 +9,12 @@ import (
 	"app/pkg/routes/root"
 )
 
+var (
+	hash string;
+)
+
 func main() {
-	serv := app.Server{Port: 8080}
+	serv := app.Server{Port: 8080, Hash: hash}
 
 	serv.AddRoute("GET /", root.Handler)
 	serv.AddRoute("GET /health", health.Handler)

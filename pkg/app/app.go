@@ -14,6 +14,7 @@ import (
 
 type Server struct {
 	Port int16
+	Hash string
 }
 
 func (serv *Server) Run() {
