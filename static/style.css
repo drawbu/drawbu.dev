@@ -16,6 +16,13 @@
     src: url("/iosevka-comfy-fixed-bold.woff2") format("woff2");
 }
 
+@font-face {
+    font-family: "Iosevka Comfy";
+    font-style: normal;
+    font-weight: 800;
+    src: url("/iosevka-comfy-fixed-extrabold.woff2") format("woff2");
+}
+
 html {
     @apply text-lg
 }
@@ -25,15 +32,15 @@ a {
 }
 
 h1 {
-    @apply text-3xl font-bold
+    @apply text-3xl font-extrabold
 }
 
 h2 {
-    @apply text-2xl
+    @apply text-2xl font-bold
 }
 
 h3, h4, h5, h6 {
-    @apply text-xl
+    @apply text-xl font-bold
 }
 
 ul {

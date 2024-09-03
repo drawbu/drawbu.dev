@@ -10,6 +10,7 @@
       system:
       let
         pkgs = import inputs.nixpkgs { inherit system; };
+        inherit (pkgs) lib;
 
         mkWOFF2From =
           name: pkg: ext:
@@ -25,16 +26,11 @@
               mkdir -p "$WOFF2_DIR"
               for file in ${pkg}/share/fonts/truetype/*.${ext}; do
               	NAME="$(basename $file .${ext})"
-              	fontforge --lang=ff \
-              		-c 'Open($1); Generate($2);' \
-              		"$file" \
-              		"$WOFF2_DIR/$NAME.woff2" &
+              	${lib.getExe reduceFont} "$file" "$WOFF2_DIR/$NAME.woff2" &
               done
               wait
             '';
           };
-
-        iosevka-comfy-woff2 = mkWOFF2From "iosevka-comfy-fixed" pkgs.iosevka-comfy.comfy-fixed "ttf";
 
         rundev = pkgs.writeShellApplication {
           name = "rundev";
@@ -44,11 +40,9 @@
             (pkgs.writeShellApplication {
               name = "buildapp";
               text = ''
-                function buildapp() {
-                  ${self.defaultPackage.${system}.preBuild}
-                  go build
-                }
-                buildapp && ./app
+                ${self.defaultPackage.${system}.preBuild}
+                go build
+                ./app
               '';
             })
           ];
@@ -63,9 +57,38 @@
           '';
         };
 
+        reduceFont =
+          pkgs.writers.writePython3Bin "reduce-font" { libraries = with pkgs.python3.pkgs; [ fontforge ]; }
+            ''
+              import fontforge
+              import sys
+
+              if len(sys.argv) != 3:
+                  print("Usage: python input.ttf output.woff2")
+                  sys.exit(1)
+
+              input_font = sys.argv[1]
+              output_font = sys.argv[2]
+
+              font = fontforge.open(input_font)
+
+              ascii_glyphs = range(0, 256)
+              for glyph in font.glyphs():
+                  if glyph.unicode not in ascii_glyphs:
+                      font.removeGlyph(glyph)
+                  else:
+                      glyph.simplify()
+
+              font.autoHint()
+              font.removeOverlap()
+
+              font.generate(output_font, flags=("tfm"))
+
+              font.close()
+            '';
       in
       rec {
-        formatter = pkgs.alejandra;
+        formatter = pkgs.nixfmt-rfc-style;
 
         devShell = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.packages.${system};
@@ -83,12 +106,26 @@
               tailwindcss
               makeWrapper
             ];
-            preBuild = ''
-              install -D ${iosevka-comfy-woff2}/share/fonts/woff2/iosevka-comfy-fixed-regular.woff2 static/
-              install -D ${iosevka-comfy-woff2}/share/fonts/woff2/iosevka-comfy-fixed-bold.woff2    static/
-              templ generate
-              tailwindcss -i static/style.css -o static/generated.css
-            '';
+            preBuild =
+              let
+                targets = [
+                  "regular"
+                  "bold"
+                  "extrabold"
+                ];
+
+                font = mkWOFF2From "iosevka-comfy-fixed" pkgs.iosevka-comfy.comfy-fixed "ttf";
+                inherit (builtins) length genList elemAt;
+              in
+              ''
+                ${builtins.concatStringsSep "\n" (
+                  genList (
+                    i: "install -D ${font}/share/fonts/woff2/iosevka-comfy-fixed-${elemAt targets i}.woff2 static/"
+                  ) (length targets)
+                )}
+                templ generate
+                tailwindcss -i static/style.css -o static/generated.css
+              '';
           };
 
           docker = pkgs.dockerTools.buildImage {
