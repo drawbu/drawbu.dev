@@ -30,13 +30,23 @@ func (serv *Server) Run() {
 
 func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) (templ.Component, error)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
+		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
+
+		hash := r.Header.Get("If-None-Match")
+		// Already cached
+		if hash == serv.Hash {
+			log.Info(fmt.Sprintf("Cached %s", log_fmt))
+			w.WriteHeader(http.StatusNotModified)
+			return
+		}
+
+		w.Header().Add("ETag", serv.Hash)
 		comp, err := handler(serv, w, r)
-		req_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
 
 		if err == nil {
-			log.Info(req_fmt)
+			log.Info(log_fmt)
 		} else {
-			log.Warn(req_fmt, "reason", err)
+			log.Warn(log_fmt, "reason", err)
 			comp = Error(err.Error(), r.RequestURI)
 		}
 
