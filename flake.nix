@@ -32,31 +32,6 @@
             '';
           };
 
-        rundev = pkgs.writeShellApplication {
-          name = "rundev";
-          runtimeInputs = [
-            pkgs.fd
-            pkgs.entr
-            (pkgs.writeShellApplication {
-              name = "buildapp";
-              text = ''
-                ${self.defaultPackage.${system}.preBuild}
-                go build
-                ./app
-              '';
-            })
-          ];
-          text = ''
-            if [ $# -eq 0 ]; then
-              buildapp
-            elif [ "$1" = "--watch" ]; then
-              fd | entr -c -r buildapp
-            else
-              echo "Usage: $0 [--watch]"
-            fi
-          '';
-        };
-
         reduceFont =
           pkgs.writers.writePython3Bin "reduce-font" { libraries = with pkgs.python3.pkgs; [ fontforge ]; }
             ''
@@ -90,12 +65,13 @@
       rec {
         formatter = pkgs.nixfmt-rfc-style;
 
-        devShell = pkgs.mkShell {
-          inputsFrom = builtins.attrValues self.packages.${system};
-          packages = [ rundev ];
+        devShells.default = pkgs.mkShell {
+          inputsFrom = builtins.attrValues packages;
+          packages = [ ];
         };
 
         packages = {
+          default = packages.app;
           app = pkgs.buildGoModule {
             name = "app";
             src = ./.;
@@ -158,9 +134,33 @@
                 Entrypoint = [ "app" ];
               };
           };
-        };
 
-        defaultPackage = packages.app;
+          dev = pkgs.writeShellApplication {
+            name = "rundev";
+            runtimeInputs = [
+              pkgs.fd
+              pkgs.entr
+              (pkgs.writeShellApplication {
+                name = "buildapp";
+                text = ''
+                  ${packages.default.preBuild}
+                  go build
+                  ./app
+                '';
+              })
+            ];
+            text = ''
+              if [ $# -eq 0 ]; then
+                buildapp
+              elif [ "$1" = "--watch" ]; then
+                fd | entr -c -r -s buildapp
+              else
+                echo "Usage: $0 [--watch]"
+              fi
+            '';
+          };
+
+        };
       }
     );
 }

@@ -22,7 +22,7 @@ nix build # Or use `nix run` directly
 
 You have all the dependencies in the nix flake, so you can just run the
 `nix develop` command and you will have everything you need. You will have
-also available the `rundev` command for fast iteration on the project.
+also available the `nix run .#dev` command for fast iteration on the project.
 
 The project depends on Go (with a few deps), Tailwind and Templ.
 
