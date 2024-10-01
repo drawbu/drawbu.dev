@@ -32,6 +32,7 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
 
+		w.Header().Add("Cache-Control", "no-cache, must-revalidate")
 		hash := r.Header.Get("If-None-Match")
 		// Already cached
 		if hash == serv.Hash {

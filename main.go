@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	hash string;
+	hash string = "dev";
 )
 
 func main() {
