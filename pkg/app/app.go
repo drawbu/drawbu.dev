@@ -14,7 +14,7 @@ import (
 
 type Server struct {
 	Port int16
-	Hash string
+	Rev string
 }
 
 func (serv *Server) Run() {
@@ -35,13 +35,13 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 		w.Header().Add("Cache-Control", "no-cache, must-revalidate")
 		hash := r.Header.Get("If-None-Match")
 		// Already cached
-		if hash == serv.Hash {
+		if hash == serv.Rev {
 			log.Info(fmt.Sprintf("Cached %s", log_fmt))
 			w.WriteHeader(http.StatusNotModified)
 			return
 		}
 
-		w.Header().Add("ETag", serv.Hash)
+		w.Header().Add("ETag", serv.Rev)
 		comp, err := handler(serv, w, r)
 
 		if err == nil {

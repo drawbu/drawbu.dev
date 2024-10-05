@@ -7,14 +7,7 @@ import (
 )
 
 templ NavButton(href string, text string) {
-	<a
-		hx-get={ href }
-		hx-trigger="click"
-		hx-target="main"
-		hx-swap="innerHTML"
-		hx-replace-url="true"
-		class="cursor-pointer"
-	>
+	<a hx-get={ href } hx-trigger="click" hx-target="main" hx-swap="innerHTML" hx-replace-url="true" class="cursor-pointer">
 		{ text }
 	</a>
 }
@@ -54,8 +47,17 @@ templ (app *Server) Template(body templ.Component) {
 					opinions listed here are my own and not representative of any of my employers, past, future, and/or present.
 				</p>
 				<p>
-					Served by me using Nix and Docker. Current build hash: "{ app.Hash }", source code available
-					<a href="https://github.com/drawbu/drawbu.dev" target="_blank" rel="noopener">here</a>.
+					Served by me using Nix and Docker.
+					<br/>
+					Build rev:
+					<a
+						target="_blank"
+						rel="noopener"
+						href={ templ.SafeURL("https://github.com/drawbu/drawbu.dev/tree/" +
+				app.Rev) }
+					>
+						{ app.Rev }
+					</a>
 				</p>
 			</footer>
 		</body>

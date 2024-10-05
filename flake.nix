@@ -81,7 +81,6 @@
               templ
               tailwindcss
               makeWrapper
-              nix
             ];
             preBuild =
               let
@@ -95,7 +94,8 @@
                 inherit (builtins) length genList elemAt;
               in
               ''
-                ldflags+=" -X main.hash=$(nix-hash ${./.})"
+                ldflags+=" -X main.rev=${if lib.hasAttr "rev" self then
+                self.shortRev else self.dirtyShortRev}"
 
                 ${builtins.concatStringsSep "\n" (
                   genList (
@@ -144,7 +144,7 @@
                 name = "buildapp";
                 text = ''
                   ${packages.default.preBuild}
-                  go build
+                  go build -ldflags "$ldflags" -o app
                   ./app
                 '';
               })
