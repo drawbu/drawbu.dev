@@ -30,7 +30,7 @@ func (serv *Server) Run() {
 
 func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) (templ.Component, error)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
-		log_fmt := fmt.Sprintf("[%s] %s -> %s", r.Method, r.RequestURI, r.Header.Get("HX-Request"))
+		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
 
 		w.Header().Add("Cache-Control", "no-cache, must-revalidate")
 		w.Header().Add("Vary", "HX-Request")
