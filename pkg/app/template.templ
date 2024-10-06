@@ -7,7 +7,15 @@ import (
 )
 
 templ NavButton(href string, text string) {
-	<a hx-get={ href } hx-trigger="click" hx-target="main" hx-swap="innerHTML" hx-replace-url="true" class="cursor-pointer">
+	<a
+		hx-get={ href }
+		hx-trigger="click"
+		hx-target="main"
+		hx-swap="innerHTML"
+		hx-replace-url="true"
+		class="cursor-pointer"
+		preload="mouseover"
+	>
 		{ text }
 	</a>
 }
@@ -17,7 +25,8 @@ templ (app *Server) Template(body templ.Component) {
 	<html lang="en">
 		<head>
 			<title>drawbu</title>
-			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+			<script src="https://unpkg.com/htmx.org@2.0.2/dist/htmx.min.js"></script>
+			<script src="https://unpkg.com/htmx.org@2.0.2/dist/ext/preload.js"></script>
 			<link rel="stylesheet" href="/generated.css"/>
 			<meta name="viewport" content="width=device-width"/>
 			<meta
@@ -28,7 +37,7 @@ templ (app *Server) Template(body templ.Component) {
 			/>
 			@dev.Header
 		</head>
-		<body class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4">
+		<body class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4" hx-ext="preload">
 			<header class="flex flex-wrap gap-2">
 				@NavButton("/", "~")
 				@NavButton("/blog", "blog")
