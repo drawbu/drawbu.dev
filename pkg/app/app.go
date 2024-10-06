@@ -30,18 +30,26 @@ func (serv *Server) Run() {
 
 func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) (templ.Component, error)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
-		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
+		log_fmt := fmt.Sprintf("[%s] %s -> %s", r.Method, r.RequestURI, r.Header.Get("HX-Request"))
 
 		w.Header().Add("Cache-Control", "no-cache, must-revalidate")
+		w.Header().Add("Vary", "HX-Request")
+		is_htmx := r.Header.Get("HX-Request") == "true"
+
+		// Cache control
 		hash := r.Header.Get("If-None-Match")
-		// Already cached
-		if hash == serv.Rev {
+		expected_hash := serv.Rev
+		if is_htmx {
+			expected_hash = "htmx-" + expected_hash
+		}
+		if hash == expected_hash {
+			// Already cached
 			log.Info(fmt.Sprintf("Cached %s", log_fmt))
 			w.WriteHeader(http.StatusNotModified)
 			return
 		}
+		w.Header().Add("ETag", expected_hash)
 
-		w.Header().Add("ETag", serv.Rev)
 		comp, err := handler(serv, w, r)
 
 		if err == nil {
@@ -56,7 +64,7 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 			return
 		}
 
-		if r.Header.Get("HX-Request") != "true" {
+		if !is_htmx {
 			comp = serv.Template(comp)
 		}
 		comp.Render(context.Background(), w)
