@@ -32,7 +32,8 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
 
-		w.Header().Add("Cache-Control", "no-cache, must-revalidate")
+		// Cache duration is one hour
+		w.Header().Add("Cache-Control", "max-age=3600")
 		w.Header().Add("Vary", "HX-Request")
 		is_htmx := r.Header.Get("HX-Request") == "true"
 
