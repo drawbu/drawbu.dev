@@ -94,8 +94,7 @@
                 inherit (builtins) length genList elemAt;
               in
               ''
-                ldflags+=" -X main.rev=${if lib.hasAttr "rev" self then
-                self.shortRev else self.dirtyShortRev}"
+                ldflags+=" -X main.rev=${self.shortRev or self.dirtyShortRev}"
 
                 ${builtins.concatStringsSep "\n" (
                   genList (
