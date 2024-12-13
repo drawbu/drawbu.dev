@@ -98,7 +98,7 @@
 
                 ${builtins.concatStringsSep "\n" (
                   genList (
-                    i: "install -D ${font}/share/fonts/woff2/iosevka-comfy-fixed-${elemAt targets i}.woff2 static/"
+                    i: "install -D ${font}/share/fonts/woff2/iosevka-comfy-fixed-normal${elemAt targets i}upright.woff2 static/"
                   ) (length targets)
                 )}
 

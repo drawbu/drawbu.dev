@@ -1,6 +1,6 @@
 ![templ](https://github.com/a-h/templ/raw/main/templ.png)
 
-## A HTML templating language for Go that has great developer tooling.
+## An HTML templating language for Go that has great developer tooling.
 
 ![templ](ide-demo.gif)
 
@@ -13,7 +13,7 @@ See user documentation at https://templ.guide
 <a href="https://pkg.go.dev/github.com/a-h/templ"><img src="https://pkg.go.dev/badge/github.com/a-h/templ.svg" alt="Go Reference" /></a>
 <a href="https://xcfile.dev"><img src="https://xcfile.dev/badge.svg" alt="xc compatible" /></a>
 <a href="https://raw.githack.com/wiki/a-h/templ/coverage.html"><img src="https://github.com/a-h/templ/wiki/coverage.svg" alt="Go Coverage" /></a>
-<a href="https://goreportcard.com/report/github.com/a-h/templ"><img src="https://goreportcard.com/badge/github.com/a-h/templ" alt="Go Report Card" /></a<
+<a href="https://goreportcard.com/report/github.com/a-h/templ"><img src="https://goreportcard.com/badge/github.com/a-h/templ" alt="Go Report Card" /></a>
 </p>
 
 ## Tasks
@@ -137,8 +137,20 @@ go run ./cmd/templ fmt .
 
 ### lint
 
+Run the lint operations that are run as part of the CI.
+
 ```sh
 golangci-lint run --verbose
+```
+
+### ensure-generated
+
+Ensure that templ files have been generated with the local version of templ, and that those files have been added to git.
+
+Requires: generate
+
+```sh
+git diff --exit-code
 ```
 
 ### push-release-tag

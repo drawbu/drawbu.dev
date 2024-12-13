@@ -2,7 +2,7 @@
   description = "templ";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -41,7 +41,8 @@
           templ = buildGoApplication {
             name = "templ";
             src = gitignore.lib.gitignoreSource ./.;
-            go = pkgs.go_1_21;
+            # Update to latest Go version when https://nixpk.gs/pr-tracker.html?pr=324123 is backported to release-24.05.
+            go = pkgs.go;
             # Must be added due to bug https://github.com/nix-community/gomod2nix/issues/120
             pwd = ./.;
             subPackages = [ "cmd/templ" ];
@@ -61,10 +62,10 @@
       devShell = forAllSystems ({ system, pkgs }:
         pkgs.mkShell {
           buildInputs = with pkgs; [
-            (golangci-lint.override { buildGoModule = buildGo121Module; })
+            golangci-lint
             cosign # Used to sign container images.
             esbuild # Used to package JS examples.
-            go_1_21
+            go_1_22
             gomod2nix.legacyPackages.${system}.gomod2nix
             gopls
             goreleaser

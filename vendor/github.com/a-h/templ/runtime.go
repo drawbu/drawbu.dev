@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"html"
@@ -80,74 +79,6 @@ func GetChildren(ctx context.Context) Component {
 		return NopComponent
 	}
 	return *v.children
-}
-
-// ComponentHandler is a http.Handler that renders components.
-type ComponentHandler struct {
-	Component    Component
-	Status       int
-	ContentType  string
-	ErrorHandler func(r *http.Request, err error) http.Handler
-}
-
-const componentHandlerErrorMessage = "templ: failed to render template"
-
-// ServeHTTP implements the http.Handler interface.
-func (ch ComponentHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	// Since the component may error, write to a buffer first.
-	// This prevents partial responses from being written to the client.
-	buf := GetBuffer()
-	defer ReleaseBuffer(buf)
-	err := ch.Component.Render(r.Context(), buf)
-	if err != nil {
-		if ch.ErrorHandler != nil {
-			w.Header().Set("Content-Type", ch.ContentType)
-			ch.ErrorHandler(r, err).ServeHTTP(w, r)
-			return
-		}
-		http.Error(w, componentHandlerErrorMessage, http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", ch.ContentType)
-	if ch.Status != 0 {
-		w.WriteHeader(ch.Status)
-	}
-	// Ignore write error like http.Error() does, because there is
-	// no way to recover at this point.
-	_, _ = w.Write(buf.Bytes())
-}
-
-// Handler creates a http.Handler that renders the template.
-func Handler(c Component, options ...func(*ComponentHandler)) *ComponentHandler {
-	ch := &ComponentHandler{
-		Component:   c,
-		ContentType: "text/html; charset=utf-8",
-	}
-	for _, o := range options {
-		o(ch)
-	}
-	return ch
-}
-
-// WithStatus sets the HTTP status code returned by the ComponentHandler.
-func WithStatus(status int) func(*ComponentHandler) {
-	return func(ch *ComponentHandler) {
-		ch.Status = status
-	}
-}
-
-// WithContentType sets the Content-Type header returned by the ComponentHandler.
-func WithContentType(contentType string) func(*ComponentHandler) {
-	return func(ch *ComponentHandler) {
-		ch.ContentType = contentType
-	}
-}
-
-// WithErrorHandler sets the error handler used if rendering fails.
-func WithErrorHandler(eh func(r *http.Request, err error) http.Handler) func(*ComponentHandler) {
-	return func(ch *ComponentHandler) {
-		ch.ErrorHandler = eh
-	}
 }
 
 // EscapeString escapes HTML text within templates.
@@ -230,6 +161,10 @@ func (cp *cssProcessor) Add(item any) {
 	case KeyValue[CSSClass, bool]:
 		cp.AddClassName(c.Key.ClassName(), c.Value)
 	case CSSClasses:
+		for _, item := range c {
+			cp.Add(item)
+		}
+	case []CSSClass:
 		for _, item := range c {
 			cp.Add(item)
 		}
@@ -438,6 +373,10 @@ func renderCSSItemsToBuilder(sb *strings.Builder, v *contextValue, classes ...an
 			renderCSSItemsToBuilder(sb, v, ccc.Key)
 		case CSSClasses:
 			renderCSSItemsToBuilder(sb, v, ccc...)
+		case []CSSClass:
+			for _, item := range ccc {
+				renderCSSItemsToBuilder(sb, v, item)
+			}
 		case func() CSSClass:
 			renderCSSItemsToBuilder(sb, v, ccc())
 		case []string:
@@ -551,42 +490,7 @@ func RenderAttributes(ctx context.Context, w io.Writer, attributes Attributes) (
 	return nil
 }
 
-// Script handling.
-
-func safeEncodeScriptParams(escapeHTML bool, params []any) []string {
-	encodedParams := make([]string, len(params))
-	for i := 0; i < len(encodedParams); i++ {
-		enc, _ := json.Marshal(params[i])
-		if !escapeHTML {
-			encodedParams[i] = string(enc)
-			continue
-		}
-		encodedParams[i] = EscapeString(string(enc))
-	}
-	return encodedParams
-}
-
-// SafeScript encodes unknown parameters for safety for inside HTML attributes.
-func SafeScript(functionName string, params ...any) string {
-	encodedParams := safeEncodeScriptParams(true, params)
-	sb := new(strings.Builder)
-	sb.WriteString(functionName)
-	sb.WriteRune('(')
-	sb.WriteString(strings.Join(encodedParams, ","))
-	sb.WriteRune(')')
-	return sb.String()
-}
-
-// SafeScript encodes unknown parameters for safety for inline scripts.
-func SafeScriptInline(functionName string, params ...any) string {
-	encodedParams := safeEncodeScriptParams(false, params)
-	sb := new(strings.Builder)
-	sb.WriteString(functionName)
-	sb.WriteRune('(')
-	sb.WriteString(strings.Join(encodedParams, ","))
-	sb.WriteRune(')')
-	return sb.String()
-}
+// Context.
 
 type contextKeyType int
 
@@ -661,95 +565,6 @@ func getContext(ctx context.Context) (context.Context, *contextValue) {
 		v = ctx.Value(contextKey).(*contextValue)
 	}
 	return ctx, v
-}
-
-// ComponentScript is a templ Script template.
-type ComponentScript struct {
-	// Name of the script, e.g. print.
-	Name string
-	// Function to render.
-	Function string
-	// Call of the function in JavaScript syntax, including parameters, and
-	// ensures parameters are HTML escaped; useful for injecting into HTML
-	// attributes like onclick, onhover, etc.
-	//
-	// Given:
-	//    functionName("some string",12345)
-	// It would render:
-	//    __templ_functionName_sha(&#34;some string&#34;,12345))
-	//
-	// This is can be injected into HTML attributes:
-	//    <button onClick="__templ_functionName_sha(&#34;some string&#34;,12345))">Click Me</button>
-	Call string
-	// Call of the function in JavaScript syntax, including parameters. It
-	// does not HTML escape parameters; useful for directly calling in script
-	// elements.
-	//
-	// Given:
-	//    functionName("some string",12345)
-	// It would render:
-	//    __templ_functionName_sha("some string",12345))
-	//
-	// This is can be used to call the function inside a script tag:
-	//    <script>__templ_functionName_sha("some string",12345))</script>
-	CallInline string
-}
-
-var _ Component = ComponentScript{}
-
-func writeScriptHeader(ctx context.Context, w io.Writer) (err error) {
-	var nonceAttr string
-	if nonce := GetNonce(ctx); nonce != "" {
-		nonceAttr = " nonce=\"" + EscapeString(nonce) + "\""
-	}
-	_, err = fmt.Fprintf(w, `<script type="text/javascript"%s>`, nonceAttr)
-	return err
-}
-
-func (c ComponentScript) Render(ctx context.Context, w io.Writer) error {
-	err := RenderScriptItems(ctx, w, c)
-	if err != nil {
-		return err
-	}
-	if len(c.Call) > 0 {
-		if err = writeScriptHeader(ctx, w); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, c.CallInline); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, `</script>`); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// RenderScriptItems renders a <script> element, if the script has not already been rendered.
-func RenderScriptItems(ctx context.Context, w io.Writer, scripts ...ComponentScript) (err error) {
-	if len(scripts) == 0 {
-		return nil
-	}
-	_, v := getContext(ctx)
-	sb := new(strings.Builder)
-	for _, s := range scripts {
-		if !v.hasScriptBeenRendered(s.Name) {
-			sb.WriteString(s.Function)
-			v.addScript(s.Name)
-		}
-	}
-	if sb.Len() > 0 {
-		if err = writeScriptHeader(ctx, w); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, sb.String()); err != nil {
-			return err
-		}
-		if _, err = io.WriteString(w, `</script>`); err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 var bufferPool = sync.Pool{
@@ -829,7 +644,7 @@ func ToGoHTML(ctx context.Context, c Component) (s template.HTML, err error) {
 // WriteWatchModeString is used when rendering templates in development mode.
 // the generator would have written non-go code to the _templ.txt file, which
 // is then read by this function and written to the output.
-func WriteWatchModeString(w *bytes.Buffer, lineNum int) error {
+func WriteWatchModeString(w io.Writer, lineNum int) error {
 	_, path, _, _ := runtime.Caller(1)
 	if !strings.HasSuffix(path, "_templ.go") {
 		return errors.New("templ: WriteWatchModeString can only be called from _templ.go")
@@ -849,7 +664,7 @@ func WriteWatchModeString(w *bytes.Buffer, lineNum int) error {
 	if err != nil {
 		return err
 	}
-	_, err = io.WriteString(io.Writer(w), unquoted)
+	_, err = io.WriteString(w, unquoted)
 	return err
 }
 

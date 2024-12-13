@@ -6,21 +6,21 @@
     font-family: "Iosevka Comfy";
     font-style: normal;
     font-weight: 400;
-    src: url("/iosevka-comfy-fixed-regular.woff2") format("woff2");
+    src: url("/iosevka-comfy-fixed-normalregularupright.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Iosevka Comfy";
     font-style: normal;
     font-weight: 700;
-    src: url("/iosevka-comfy-fixed-bold.woff2") format("woff2");
+    src: url("/iosevka-comfy-fixed-normalboldupright.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Iosevka Comfy";
     font-style: normal;
     font-weight: 800;
-    src: url("/iosevka-comfy-fixed-extrabold.woff2") format("woff2");
+    src: url("/iosevka-comfy-fixed-normalextraboldupright.woff2") format("woff2");
 }
 
 html {
