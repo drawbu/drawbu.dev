@@ -96,14 +96,16 @@
               ''
                 ldflags+=" -X main.rev=${self.shortRev or self.dirtyShortRev}"
 
+                templ generate
+
+                mkdir -p static/dist
+                cp static/robots.txt static/dist
                 ${builtins.concatStringsSep "\n" (
                   genList (
-                    i: "install -D ${font}/share/fonts/woff2/iosevka-comfy-fixed-normal${elemAt targets i}upright.woff2 static/"
+                    i: "install -D ${font}/share/fonts/woff2/iosevka-comfy-fixed-normal${elemAt targets i}upright.woff2 static/dist"
                   ) (length targets)
                 )}
-
-                templ generate
-                tailwindcss -i static/style.css -o static/generated.css
+                tailwindcss -i static/style.css -o static/dist/style.css
               '';
           };
 

@@ -1,7 +1,20 @@
 package static
 
-import "embed"
+import (
+	"embed"
+	"io/fs"
+)
 
-// content holds our static articles
-//go:embed robots.txt generated.css *.woff2
-var Files embed.FS
+//go:embed dist/*
+var embeded_files embed.FS
+
+var Files fs.FS
+
+func init() {
+	var err error
+	Files, err = fs.Sub(embeded_files, "dist")
+
+	if err != nil {
+		panic(err)
+	}
+}
