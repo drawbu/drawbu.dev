@@ -130,7 +130,7 @@
               {
                 Healthcheck.Test = [
                   "CMD"
-                  "${pkgs.lib.getExe healthcheck}"
+                  "${lib.getExe healthcheck}"
                 ];
                 Entrypoint = [ "app" ];
               };
