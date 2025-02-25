@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @font-face {
     font-family: "Iosevka Comfy";
@@ -21,6 +19,14 @@
     font-style: normal;
     font-weight: 800;
     src: url("/iosevka-comfy-fixed-normalextraboldupright.woff2") format("woff2");
+}
+
+@theme {
+    --font-body: "Iosevka Comfy", "sans-serif";
+    --font-display: "Iosevka Comfy", "sans-serif";
+    --font-mono: "Iosevka Comfy", "sans-serif";
+    --font-sans: "Iosevka Comfy", "sans-serif";
+    --font-serif: "Iosevka Comfy", "sans-serif";
 }
 
 html {

@@ -79,7 +79,7 @@
             tags = [ "production" ];
             nativeBuildInputs = with pkgs; [
               templ
-              tailwindcss
+              tailwindcss_4
               makeWrapper
             ];
             preBuild =
@@ -105,7 +105,7 @@
                     i: "install -D ${font}/share/fonts/woff2/iosevka-comfy-fixed-normal${elemAt targets i}upright.woff2 static/dist"
                   ) (length targets)
                 )}
-                tailwindcss -i static/style.css -o static/dist/style.css
+                tailwindcss -i static/style.css -o static/dist/style.css -m
               '';
           };
 
