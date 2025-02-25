@@ -94,7 +94,7 @@
                 inherit (builtins) length genList elemAt;
               in
               ''
-                ldflags+=" -X main.rev=${self.shortRev or self.dirtyShortRev}"
+                ldflags+=" -X main.rev=${self.shortRev or "dev"}"
 
                 templ generate
 

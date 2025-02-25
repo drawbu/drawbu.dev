@@ -14,7 +14,7 @@ import (
 
 type Server struct {
 	Port int16
-	Rev string
+	Rev  string
 }
 
 func (serv *Server) Run() {
@@ -28,28 +28,39 @@ func (serv *Server) Run() {
 	}
 }
 
+func is_htmx(r *http.Request) bool {
+	return r.Header.Get("HX-Request") == "true"
+}
+
+func compute_etag(serv *Server, r *http.Request) string {
+	etag := serv.Rev
+
+	if etag == "dev" {
+		return ""
+	}
+	if is_htmx(r) {
+		return "htmx-" + etag
+	}
+	return etag
+}
+
 func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) (templ.Component, error)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
 
-		// Cache duration is one hour
-		w.Header().Add("Cache-Control", "max-age=3600")
-		w.Header().Add("Vary", "HX-Request")
-		is_htmx := r.Header.Get("HX-Request") == "true"
-
-		// Cache control
-		hash := r.Header.Get("If-None-Match")
-		expected_hash := serv.Rev
-		if is_htmx {
-			expected_hash = "htmx-" + expected_hash
+		expected_etag := compute_etag(serv, r)
+		if expected_etag != "" {
+			// Cache duration is one hour
+			w.Header().Add("Cache-Control", "max-age=3600")
+			w.Header().Add("Vary", "HX-Request")
+			if expected_etag == r.Header.Get("If-None-Match") {
+				// Already cached
+				log.Info("Cached " + log_fmt)
+				w.WriteHeader(http.StatusNotModified)
+				return
+			}
+			w.Header().Add("ETag", expected_etag)
 		}
-		if hash == expected_hash {
-			// Already cached
-			log.Info(fmt.Sprintf("Cached %s", log_fmt))
-			w.WriteHeader(http.StatusNotModified)
-			return
-		}
-		w.Header().Add("ETag", expected_hash)
 
 		comp, err := handler(serv, w, r)
 
@@ -60,12 +71,13 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 			comp = Error(err.Error(), r.RequestURI)
 		}
 
-		// Already served
+		// Already served by handler
 		if comp == nil {
+			log.Info(log_fmt)
 			return
 		}
 
-		if !is_htmx {
+		if !is_htmx(r) {
 			comp = serv.Template(comp)
 		}
 		comp.Render(context.Background(), w)
