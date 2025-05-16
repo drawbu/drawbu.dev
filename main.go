@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	rev string = "foo";
+	rev string = "foo"
 )
 
 func main() {

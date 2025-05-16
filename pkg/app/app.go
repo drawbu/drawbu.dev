@@ -28,38 +28,42 @@ func (serv *Server) Run() {
 	}
 }
 
-func is_htmx(r *http.Request) bool {
+func (serv *Server) is_htmx(r *http.Request) bool {
 	return r.Header.Get("HX-Request") == "true"
 }
 
-func compute_etag(serv *Server, r *http.Request) string {
+func (serv *Server) compute_etag(r *http.Request) string {
 	etag := serv.Rev
 
 	if etag == "dev" {
 		return ""
 	}
-	if is_htmx(r) {
+	if serv.is_htmx(r) {
 		return "htmx-" + etag
 	}
 	return etag
+}
+
+func (serv *Server) Cache_route(w http.ResponseWriter, r *http.Request, max_age int32) {
+	expected_etag := serv.compute_etag(r)
+	if expected_etag == "" {
+		return
+	}
+
+	w.Header().Add("Cache-Control", "max-age="+fmt.Sprint(max_age))
+	w.Header().Add("Vary", "HX-Request")
+	w.Header().Add("ETag", expected_etag)
 }
 
 func (serv *Server) AddRoute(route string, handler func(app *Server, w http.ResponseWriter, r *http.Request) (templ.Component, error)) {
 	http.HandleFunc(route, func(w http.ResponseWriter, r *http.Request) {
 		log_fmt := fmt.Sprintf("[%s] %s", r.Method, r.RequestURI)
 
-		expected_etag := compute_etag(serv, r)
-		if expected_etag != "" {
-			// Cache duration is one hour
-			w.Header().Add("Cache-Control", "max-age=3600")
-			w.Header().Add("Vary", "HX-Request")
-			if expected_etag == r.Header.Get("If-None-Match") {
-				// Already cached
-				log.Info("Cached " + log_fmt)
-				w.WriteHeader(http.StatusNotModified)
-				return
-			}
-			w.Header().Add("ETag", expected_etag)
+		etag := serv.compute_etag(r)
+		if etag != "" && etag == r.Header.Get("If-None-Match") {
+			log.Info("Cached " + log_fmt)
+			w.WriteHeader(http.StatusNotModified)
+			return
 		}
 
 		comp, err := handler(serv, w, r)
@@ -73,13 +77,12 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 
 		// Already served by handler
 		if comp == nil {
-			log.Info(log_fmt)
 			return
 		}
-
-		if !is_htmx(r) {
+		if !serv.is_htmx(r) {
 			comp = serv.Template(comp)
 		}
+		log.Info(log_fmt)
 		comp.Render(context.Background(), w)
 	})
 }

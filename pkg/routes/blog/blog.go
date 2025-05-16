@@ -39,6 +39,7 @@ type article struct {
 func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
 	if err != nil || article_name == "" {
+		serv.Cache_route(w, r, 3600)
 		return blog(getSortedArticles(Articles)), nil
 	}
 
@@ -46,6 +47,7 @@ func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Co
 	if !ok {
 		return nil, errors.New("Article not found")
 	}
+	serv.Cache_route(w, r, 3600)
 	return articleShow(a), nil
 }
 
