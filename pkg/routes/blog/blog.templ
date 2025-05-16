@@ -1,7 +1,5 @@
 package blog
 
-import "app/pkg/app"
-
 templ blog(articles []article) {
 	<div class="flex flex-col gap-4">
 		<h2>Blog</h2>
@@ -9,7 +7,7 @@ templ blog(articles []article) {
 			for _, article := range articles {
 				<li>
 					<span class="mr-2">{ article.Date.Format("2006-01-02") }</span>
-					@app.NavButton("/blog/"+article.Title, article.Title)
+					<a href={ templ.SafeURL("/blog/" + article.Title) }>{ article.Title }</a>
 				</li>
 			}
 		</ul>

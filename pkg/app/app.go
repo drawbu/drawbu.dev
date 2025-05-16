@@ -72,17 +72,10 @@ func (serv *Server) AddRoute(route string, handler func(app *Server, w http.Resp
 			log.Info(log_fmt)
 		} else {
 			log.Warn(log_fmt, "reason", err)
-			comp = Error(err.Error(), r.RequestURI)
+			comp = serv.Template(Error(err.Error(), r.RequestURI))
 		}
-
-		// Already served by handler
-		if comp == nil {
-			return
+		if comp != nil {
+			comp.Render(context.Background(), w)
 		}
-		if !serv.is_htmx(r) {
-			comp = serv.Template(comp)
-		}
-		log.Info(log_fmt)
-		comp.Render(context.Background(), w)
 	})
 }

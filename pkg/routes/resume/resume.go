@@ -10,5 +10,5 @@ import (
 
 func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
 	serv.Cache_route(w, r, 3600)
-	return resume(), nil
+	return serv.Template(resume()), nil
 }
