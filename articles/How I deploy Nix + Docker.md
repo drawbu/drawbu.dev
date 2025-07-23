@@ -1,6 +1,7 @@
 ---
 title: How I deploy Nix + Docker
 date: 2024-06-09
+uri: deploy-nix-docker
 ---
 
 Hello everyone :)
