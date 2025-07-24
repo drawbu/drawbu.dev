@@ -1,0 +1,80 @@
+name: Check build and push OCI image
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Nix
+      uses: cachix/install-nix-action@v31
+
+    - name: Restore and save Nix store
+      uses: nix-community/cache-nix-action@v6
+      with:
+        primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+
+    - name: Prepare dev shell
+      run: nix build .#devShells.x86_64-linux.default
+
+    - name: Check dependencies
+      run: |
+        nix develop -c go mod tidy
+
+    - name: Format go code
+      run: |
+        nix develop -c go fmt
+
+    - name: Build app
+      run: nix build
+
+    - name: Check for modified files
+      run: |
+        if [[ -n $(git status --porcelain) ]]; then
+          echo "yarn install produces an impure tree. Please run 'yarn install' and commit the changes."
+          git status
+          exit 1
+        fi
+
+  docker:
+    needs: [checks]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Nix
+      uses: cachix/install-nix-action@v31
+
+    - name: Restore and save Nix store
+      uses: nix-community/cache-nix-action@v6
+      with:
+        primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+
+    - name: Build Docker image
+      run: nix build .#docker
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Push Docker image to GitHub Container Registry
+      id: push
+      run: |
+        docker load < result
+        docker tag drawbu.dev ${{ env.IMAGE_NAME }}
+        docker push ${{ env.IMAGE_NAME }}
