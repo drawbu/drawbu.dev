@@ -14,7 +14,7 @@ import (
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
 	mdParser "github.com/yuin/goldmark/parser"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 type article struct {
@@ -22,12 +22,22 @@ type article struct {
 	Date    time.Time
 	Content []byte
 	Uri     string
+	Author  articleAuthor
+}
+
+type articleAuthor struct {
+	Name  string
+	Email string
 }
 
 type articleMetadata struct {
-	Title string      `yaml:"title"`
-	Date  ArticleDate `yaml:"date"`
-	Uri   string      `yaml:"uri"`
+	Title  string      `yaml:"title"`
+	Date   ArticleDate `yaml:"date"`
+	Uri    string      `yaml:"uri"`
+	Author struct {
+		Name  string `yaml:"name"`
+		Email string `yaml:"email,omitempty"`
+	} `yaml:"author"`
 }
 
 func NewArticle(file fs.File) (*article, error) {
@@ -53,11 +63,15 @@ func NewArticle(file fs.File) (*article, error) {
 		Date:    metadata.Date.Time,
 		Content: buf.Bytes(),
 		Uri:     uri,
+		Author: articleAuthor{
+			Email: metadata.Author.Email,
+			Name:  metadata.Author.Name,
+		},
 	}, nil
 }
 
 func getMetadata(context mdParser.Context) (*articleMetadata, error) {
-	metadata, err := meta.TryGetItems(context)
+	metadata, err := meta.TryGet(context)
 	if err != nil {
 		return nil, fmt.Errorf("Could not get article metadata: %s", err)
 	}
@@ -67,9 +81,11 @@ func getMetadata(context mdParser.Context) (*articleMetadata, error) {
 		return nil, fmt.Errorf("Could not Marshal metadata: %s", err)
 	}
 	var final articleMetadata
-	err = yaml.Unmarshal(out, &final)
+	if err = yaml.Unmarshal(out, &final); err != nil {
+		return nil, fmt.Errorf("Failed to unmarshal metadata: %s", err)
+	}
 
-	return &final, err
+	return &final, nil
 }
 
 func fileToMarkdown(file fs.File, buf *bytes.Buffer) (mdParser.Context, error) {

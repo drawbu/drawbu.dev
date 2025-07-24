@@ -2,6 +2,9 @@
 title: How to setup a server block with Nginx + systemd on Ubuntu with HTTPS
 date: 2023-05-02
 uri: server-block-nginx-systemd-ubuntu-https
+author:
+  name: drawbu
+  email: contact@drawbu.dev
 ---
 
 In this guide, we are going to use the keyword for you to replace. There will be `REPOSITORY ` and `DOMAIN_NAME` to replace.

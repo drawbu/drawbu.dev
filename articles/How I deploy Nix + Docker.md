@@ -2,6 +2,9 @@
 title: How I deploy Nix + Docker
 date: 2024-06-09
 uri: deploy-nix-docker
+author:
+  name: drawbu
+  email: contact@drawbu.dev
 ---
 
 Hello everyone :)

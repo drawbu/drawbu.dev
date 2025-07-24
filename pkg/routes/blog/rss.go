@@ -50,7 +50,7 @@ func makeFeed() feeds.Feed {
 			Title: item.Title,
 			Link:  &feeds.Link{Href: fmt.Sprintf("https://drawbu.dev/blog/%s", item.Uri)},
 			// Description: "A discussion on controlled parallelism in golang",
-			Author:  &feeds.Author{Name: "Clément (drawbu)", Email: "contact@drawbu.dev"},
+			Author:  &feeds.Author{Name: item.Author.Name, Email: item.Author.Email},
 			Created: item.Date,
 		})
 	}
