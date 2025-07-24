@@ -6,7 +6,7 @@ templ blog(articles []article) {
 		<ul>
 			for _, article := range articles {
 				<li>
-					<span class="mr-2">{ article.Date.Format("2006-01-02") }</span>
+					<span class="mr-2">{ article.Date.Format("Jan 2006") }</span>
 					<a href={ templ.SafeURL("/blog/" + article.Uri) }>{ article.Title }</a>
 				</li>
 			}
