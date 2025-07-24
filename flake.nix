@@ -75,7 +75,7 @@
           app = pkgs.buildGoModule {
             name = "app";
             src = ./.;
-            vendorHash = null;
+            vendorHash = "sha256-B4TVIG74wycA5+JllSDBx7AFnTQc0eldp4Epcp+CqP8=";
             tags = [ "production" ];
             nativeBuildInputs = with pkgs; [
               templ
