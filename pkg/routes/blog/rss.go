@@ -49,7 +49,7 @@ func makeFeed() feeds.Feed {
 		items = append(items, &feeds.Item{
 			Title: item.Title,
 			Link:  &feeds.Link{Href: fmt.Sprintf("https://drawbu.dev/blog/%s", item.Uri)},
-			// Description: "A discussion on controlled parallelism in golang",
+			Description: item.Description,
 			Author:  &feeds.Author{Name: item.Author.Name, Email: item.Author.Email},
 			Created: item.Date,
 		})

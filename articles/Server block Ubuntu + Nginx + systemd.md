@@ -5,6 +5,7 @@ uri: server-block-nginx-systemd-ubuntu-https
 author:
   name: drawbu
   email: contact@drawbu.dev
+description: How I used nginx and systemd on a single VPS to host a ton of different websites
 ---
 
 In this guide, we are going to use the keyword for you to replace. There will be `REPOSITORY ` and `DOMAIN_NAME` to replace.

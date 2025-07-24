@@ -18,11 +18,12 @@ import (
 )
 
 type article struct {
-	Title   string
-	Date    time.Time
-	Content []byte
-	Uri     string
-	Author  articleAuthor
+	Title       string
+	Date        time.Time
+	Content     []byte
+	Uri         string
+	Author      articleAuthor
+	Description string
 }
 
 type articleAuthor struct {
@@ -38,6 +39,7 @@ type articleMetadata struct {
 		Name  string `yaml:"name"`
 		Email string `yaml:"email,omitempty"`
 	} `yaml:"author"`
+	Description string `yaml:"description"`
 }
 
 func NewArticle(file fs.File) (*article, error) {
@@ -67,6 +69,7 @@ func NewArticle(file fs.File) (*article, error) {
 			Email: metadata.Author.Email,
 			Name:  metadata.Author.Name,
 		},
+		Description: metadata.Description,
 	}, nil
 }
 

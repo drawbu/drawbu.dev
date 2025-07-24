@@ -5,6 +5,7 @@ uri: install-nixos-contabo-vps
 author:
   name: drawbu
   email: contact@drawbu.dev
+description: Step by step installation of NixOS on a contabo server. This is mainly a guide for myself
 ---
 
 In this guide, we'll see how to setup NixOS on a Ubuntu 22.04 Contabo VPS.

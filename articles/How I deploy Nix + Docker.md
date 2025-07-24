@@ -5,6 +5,7 @@ uri: deploy-nix-docker
 author:
   name: drawbu
   email: contact@drawbu.dev
+description: Guide on how I leveraged my Nix workflow to create reproducible docker images to deploy my blog
 ---
 
 Hello everyone :)
