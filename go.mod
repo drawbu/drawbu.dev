@@ -11,6 +11,7 @@ require (
 	github.com/yuin/goldmark v1.7.8
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 	github.com/yuin/goldmark-meta v1.1.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -26,5 +27,4 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa // indirect
 	golang.org/x/sys v0.30.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

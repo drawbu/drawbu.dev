@@ -14,6 +14,7 @@ import (
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	meta "github.com/yuin/goldmark-meta"
 	mdParser "github.com/yuin/goldmark/parser"
+	"gopkg.in/yaml.v2"
 )
 
 type article struct {
@@ -23,7 +24,11 @@ type article struct {
 	Uri     string
 }
 
-// TODO: Add metadata validation
+type articleMetadata struct {
+	Title string      `yaml:"title"`
+	Date  ArticleDate `yaml:"date"`
+	Uri   string      `yaml:"uri"`
+}
 
 func NewArticle(file fs.File) (*article, error) {
 
@@ -33,24 +38,38 @@ func NewArticle(file fs.File) (*article, error) {
 		return nil, fmt.Errorf("Could not convert to markdown: %s", err)
 	}
 
-	metadata := meta.Get(context)
-
-	date, err := time.Parse("2006-01-02", metadata["date"].(string))
+	metadata, err := getMetadata(context)
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse as date : %s", err)
+		return nil, fmt.Errorf("Could not get article metadata: %s", err)
 	}
 
-	uri, err := makeArticleUri(date, metadata)
+	uri, err := makeArticleUri(*metadata)
 	if err != nil {
 		return nil, fmt.Errorf("Could make article uri: %s", err)
 	}
 
 	return &article{
-		Title:   metadata["title"].(string),
-		Date:    date,
+		Title:   metadata.Title,
+		Date:    metadata.Date.Time,
 		Content: buf.Bytes(),
-		Uri: uri,
+		Uri:     uri,
 	}, nil
+}
+
+func getMetadata(context mdParser.Context) (*articleMetadata, error) {
+	metadata, err := meta.TryGetItems(context)
+	if err != nil {
+		return nil, fmt.Errorf("Could not get article metadata: %s", err)
+	}
+
+	out, err := yaml.Marshal(metadata)
+	if err != nil {
+		return nil, fmt.Errorf("Could not Marshal metadata: %s", err)
+	}
+	var final articleMetadata
+	err = yaml.Unmarshal(out, &final)
+
+	return &final, err
 }
 
 func fileToMarkdown(file fs.File, buf *bytes.Buffer) (mdParser.Context, error) {
@@ -81,17 +100,34 @@ func fileToMarkdown(file fs.File, buf *bytes.Buffer) (mdParser.Context, error) {
 	return context, nil
 }
 
-func makeArticleUri(date time.Time, metadata map[string]any) (string, error) {
-
-	metaUri := metadata["uri"].(string)
-
-	if metaUri == "" {
-		metaTitle := metadata["title"].(string)
-		if metaTitle == "" {
+func makeArticleUri(metadata articleMetadata) (string, error) {
+	uri := metadata.Uri
+	if uri == "" {
+		if metadata.Title == "" {
 			return "", fmt.Errorf("Either one of 'uri' or 'title' needs to be set")
 		}
-		metaUri = url.QueryEscape(strings.ReplaceAll(strings.ToLower(metaTitle), " ", "-"))
+		uri = url.QueryEscape(strings.ReplaceAll(strings.ToLower(metadata.Title), " ", "-"))
 	}
 
-	return fmt.Sprintf("%s/%s", date.Format("2006/01"), metaUri), nil
+	return fmt.Sprintf("%s/%s", metadata.Date.Time.Format("2006/01"), uri), nil
+}
+
+type ArticleDate struct {
+	Time time.Time
+}
+
+func (t *ArticleDate) UnmarshalYAML(unmarshal func(any) error) error {
+
+	var buf string
+	err := unmarshal(&buf)
+	if err != nil {
+		return fmt.Errorf("Could not unmarshal date: %s", err)
+	}
+
+	tt, err := time.Parse("2006-01-02", strings.TrimSpace(buf))
+	if err != nil {
+		return fmt.Errorf("Could not parse date: %s", err)
+	}
+	t.Time = tt
+	return nil
 }

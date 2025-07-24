@@ -70,9 +70,11 @@ func getArticles(filesystem fs.ReadDirFS) []article {
 			continue
 		}
 		a, err := NewArticle(file)
-		if err == nil || a != nil {
-			result = append(result, *a)
+		if err != nil {
+			log.Fatal("Error building article", "name", entry.Name(), "reason", err)
+			continue
 		}
+		result = append(result, *a)
 	}
 	return result
 }
