@@ -16,10 +16,23 @@ func RssHandler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ
 
 	rss, err := feed.ToRss()
 	if err != nil {
-		return nil, fmt.Errorf("Could not render RSS: %s", err)
+		return nil, fmt.Errorf("Could not render RSS feed: %s", err)
 	}
 	w.Header().Set("Content-Type", "application/rss+xml")
 	io.WriteString(w, rss)
+	return nil, nil
+}
+
+func AtomHandler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
+	serv.Cache_route(w, r, 3600)
+	feed := makeFeed()
+
+	atom, err := feed.ToAtom()
+	if err != nil {
+		return nil, fmt.Errorf("Could not render Atom feed: %s", err)
+	}
+	w.Header().Set("Content-Type", "application/atom+xml")
+	io.WriteString(w, atom)
 	return nil, nil
 }
 
