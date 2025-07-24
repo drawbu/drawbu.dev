@@ -23,7 +23,11 @@ templ (app *Server) Template(body templ.Component) {
 			/>
 			@dev.Header
 		</head>
-		<body class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4" hx-ext="preload" hx-boost="true">
+		<body
+			class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4 dark:bg-gray-800 dark:text-white"
+			hx-ext="preload"
+			hx-boost="true"
+		>
 			<header class="flex flex-wrap gap-2">
 				<a href="/">~</a>
 				<a href="/blog">blog</a>
