@@ -16,13 +16,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup Nix
-      uses: cachix/install-nix-action@v31
+    - uses: nixbuild/nix-quick-install-action@v30
+      with:
+        nix_conf: |
+          keep-env-derivations = true
+          keep-outputs = true
 
     - name: Restore and save Nix store
       uses: nix-community/cache-nix-action@v6
       with:
         primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+        gc-max-store-size-linux: 1G
 
     - name: Prepare dev shell
       run: nix build .#devShells.x86_64-linux.default
@@ -54,13 +58,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup Nix
-      uses: cachix/install-nix-action@v31
+    - uses: nixbuild/nix-quick-install-action@v30
+      with:
+        nix_conf: |
+          keep-env-derivations = true
+          keep-outputs = true
 
     - name: Restore and save Nix store
       uses: nix-community/cache-nix-action@v6
       with:
         primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+        gc-max-store-size-linux: 1G
 
     - name: Build Docker image
       run: nix build .#docker
