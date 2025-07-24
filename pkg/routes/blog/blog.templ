@@ -3,6 +3,7 @@ package blog
 templ blog(articles []article) {
 	<div class="flex flex-col gap-4">
 		<h2>Blog</h2>
+		<a href="/blog/rss.xml" hx-boost="false">RSS Feed</a>
 		<ul>
 			for _, article := range articles {
 				<li>
