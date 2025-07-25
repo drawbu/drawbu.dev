@@ -20,7 +20,7 @@ var Articles = make(map[string]article)
 
 func init() {
 	for _, a := range getArticles(articles.Articles) {
-		Articles[a.Uri] = a
+		Articles[strings.ToLower(a.Uri)] = a
 	}
 }
 
@@ -35,7 +35,7 @@ func ArticleHandler(serv *app.Server, w http.ResponseWriter, r *http.Request) (t
 		return nil, fmt.Errorf("Failed to get article: %s", err)
 	}
 
-	a, ok := Articles[article_name]
+	a, ok := Articles[strings.ToLower(article_name)]
 	if !ok {
 		return nil, errors.New("Article not found")
 	}

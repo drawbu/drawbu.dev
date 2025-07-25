@@ -44,7 +44,7 @@ func makeFeed() feeds.Feed {
 		Author:      &feeds.Author{Name: "Clément (drawbu)", Email: "contact@drawbu.dev"},
 	}
 
-	var items = make([]*feeds.Item, 0)
+	var items = make([]*feeds.Item, 0, len(Articles))
 	for _, item := range Articles {
 		items = append(items, &feeds.Item{
 			Title: item.Title,
