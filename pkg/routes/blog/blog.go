@@ -2,6 +2,7 @@ package blog
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"net/url"
@@ -24,10 +25,14 @@ func init() {
 }
 
 func Handler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
+	serv.Cache_route(w, r, 3600)
+	return serv.Template(blog(getSortedArticles(Articles))), nil
+}
+
+func ArticleHandler(serv *app.Server, w http.ResponseWriter, r *http.Request) (templ.Component, error) {
 	article_name, err := url.PathUnescape(r.PathValue("article"))
-	if err != nil || article_name == "" {
-		serv.Cache_route(w, r, 3600)
-		return serv.Template(blog(getSortedArticles(Articles))), nil
+	if err != nil {
+		return nil, fmt.Errorf("Failed to get article: %s", err)
 	}
 
 	a, ok := Articles[article_name]
