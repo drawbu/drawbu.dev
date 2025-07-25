@@ -58,7 +58,7 @@ ul {
 }
 
 #article p > code {
-    @apply bg-gray-200 px-1 dark:text-gray-800
+    @apply bg-gray-200 px-1 dark:bg-gray-600
 }
 
 #article blockquote > p {
