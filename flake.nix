@@ -74,7 +74,17 @@
           default = packages.app;
           app = pkgs.buildGoModule {
             name = "app";
-            src = ./.;
+            src = lib.fileset.toSource {
+              root = ./.;
+              fileset = lib.fileset.unions [
+                ./main.go
+                ./go.mod
+                ./go.sum
+                ./articles
+                ./pkg
+                ./static
+              ];
+            };
             vendorHash = "sha256-nw5TouuxauSa520hidHom/iN6VxrGN/7By9spsJ5h6Y=";
             tags = [ "production" ];
             nativeBuildInputs = with pkgs; [
