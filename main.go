@@ -7,17 +7,30 @@ import (
 	"app/pkg/routes/health"
 	"app/pkg/routes/resume"
 	"app/pkg/routes/root"
+	"fmt"
+	"os"
 
 	"github.com/charmbracelet/log"
+	"github.com/pschou/go-params"
 )
 
 var (
-	rev string = "foo"
+	rev         string = "foo"
+	defaultPort int    = 8080
 )
 
 func main() {
-	log.Info("Current revision: " + rev)
-	serv := app.Server{Port: 8080, Rev: rev}
+	params.Usage = func() {
+		fmt.Fprintf(os.Stderr, "drawbu.dev, build rev: %s\n\n"+
+			"Usage: %s [options...]\n\n", rev, os.Args[0])
+		params.PrintDefaults()
+	}
+	var port = params.Int("port", defaultPort, "Web server's listening port", "Number")
+	params.Parse()
+
+	log.Info("Starting server", "port", *port, "rev", rev)
+
+	serv := app.Server{Port: int16(*port), Rev: rev}
 
 	serv.AddRoute("GET /", root.Handler)
 	serv.AddRoute("GET /health", health.Handler)

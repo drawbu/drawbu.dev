@@ -85,7 +85,7 @@
                 ./static
               ];
             };
-            vendorHash = "sha256-nw5TouuxauSa520hidHom/iN6VxrGN/7By9spsJ5h6Y=";
+            vendorHash = "sha256-ODDE+a414UoPVfa9HCSZlYf/YdCRq0sH5FQoUk4jqEM=";
             tags = [ "production" ];
             nativeBuildInputs = with pkgs; [
               templ
@@ -133,7 +133,7 @@
                   name = "healthcheck";
                   runtimeInputs = [ pkgs.curl ];
                   text = ''
-                    test "$(curl --fail localhost:8080/health)" = "OK"
+                    test "$(curl --fail localhost/health)" = "OK"
                   '';
                 };
               in
@@ -142,7 +142,11 @@
                   "CMD"
                   "${lib.getExe healthcheck}"
                 ];
-                Entrypoint = [ "app" ];
+                Entrypoint = [
+                  "app"
+                  "--port"
+                  "80"
+                ];
               };
           };
 

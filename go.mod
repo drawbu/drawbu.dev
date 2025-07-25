@@ -8,11 +8,14 @@ require (
 	github.com/a-h/templ v0.3.833
 	github.com/alecthomas/chroma/v2 v2.15.0
 	github.com/charmbracelet/log v0.4.0
+	github.com/pschou/go-params v0.0.0-20240104134853-225c817afb69
 	github.com/yuin/goldmark v1.7.8
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 	github.com/yuin/goldmark-meta v1.1.0
 	gopkg.in/yaml.v3 v3.0.1
 )
+
+require github.com/xhit/go-str2duration v1.2.0 // indirect
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect

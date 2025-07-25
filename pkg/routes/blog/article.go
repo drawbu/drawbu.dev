@@ -96,7 +96,7 @@ func fileToMarkdown(file fs.File, buf *bytes.Buffer) (mdParser.Context, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error getting file info: %s", err)
 	}
-	log.Info("Opening new article", "name", info.Name)
+	log.Info("Opening new article", "name", info.Name())
 
 	content := make([]byte, info.Size())
 	if _, err = file.Read(content); err != nil {
