@@ -1,11 +1,9 @@
 module app
 
-go 1.23.0
-
-toolchain go1.23.6
+go 1.24.5
 
 require (
-	github.com/a-h/templ v0.3.833
+	github.com/a-h/templ v0.3.906
 	github.com/alecthomas/chroma/v2 v2.15.0
 	github.com/charmbracelet/log v0.4.0
 	github.com/pschou/go-params v0.0.0-20240104134853-225c817afb69
@@ -30,6 +28,6 @@ require (
 	github.com/muesli/termenv v0.16.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	golang.org/x/exp v0.0.0-20250218142911-aa4b98e5adaa // indirect
-	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
