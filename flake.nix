@@ -85,7 +85,7 @@
                 ./static
               ];
             };
-            vendorHash = "sha256-ODDE+a414UoPVfa9HCSZlYf/YdCRq0sH5FQoUk4jqEM=";
+            vendorHash = "sha256-IsLVMmS0dSGewwNZDpolzuQokLGeP9RTI8jzMOmbmcE=";
             tags = [ "production" ];
             nativeBuildInputs = with pkgs; [
               templ

@@ -34,10 +34,9 @@ func main() {
 
 	serv.AddRoute("GET /", root.Handler)
 	serv.AddRoute("GET /health", health.Handler)
-	serv.AddRoute("GET /blog", blog.Handler)
 	serv.AddRoute("GET /blog/rss.xml", blog.RssHandler)
 	serv.AddRoute("GET /blog/atom.xml", blog.AtomHandler)
-	serv.AddRoute("GET /blog/{article...}", blog.ArticleHandler)
+	serv.AddRoute("GET /blog/{article...}", blog.Handler)
 	serv.AddRoute("GET /contact", contact.Handler)
 	serv.AddRoute("GET /resume", resume.Handler)
 
