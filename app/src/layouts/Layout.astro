@@ -1,0 +1,85 @@
+---
+import { Font } from "astro:assets";
+import "../styles/global.css";
+const year = new Date().getFullYear();
+const rev = import.meta.env.GIT_REV || "[object Object]";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>drawbu</title>
+        <meta charset="utf-8" />
+        <script
+            is:inline
+            src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+            integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+            crossorigin="anonymous"></script>
+        <script
+            is:inline
+            src="https://cdn.jsdelivr.net/npm/htmx-ext-preload@2.1.2"
+            integrity="sha384-PRIcY6hH1Y5784C76/Y8SqLyTanY9rnI3B8F3+hKZFNED55hsEqMJyqWhp95lgfk"
+            crossorigin="anonymous"></script>
+        <meta name="viewport" content="width=device-width" />
+        <meta
+            name="description"
+            content="Clément 'drawbu' Boillot personnal website. I'm a
+               french student software engineer, and I write about programming,
+               tech, and random thoughts."
+        />
+        <Font cssVariable="--font-iosevka" preload />
+        <link
+            rel="alternate"
+            type="application/rss+xml"
+            title="RSS Feed"
+            href="/blog/rss.xml"
+        />
+    </head>
+    <body
+        class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4 dark:bg-slate-800 dark:text-gray-300"
+        hx-ext="preload"
+        hx-boost="true"
+    >
+        <header class="flex flex-wrap gap-2" preload="mouseover">
+            <a href="/">~</a>
+            <a href="/blog">blog</a>
+            <a href="/contact">contact</a>
+            <a href="/resume">resume</a>
+            <a href="https://github.com/drawbu" target="_blank" rel="noopener"
+                >github</a
+            >
+            <a
+                href="https://linkedin.com/in/clément-boillot"
+                target="_blank"
+                rel="noopener">linkedin</a
+            >
+        </header>
+        <main>
+            <slot />
+        </main>
+        <footer>
+            <p>
+                Copyright 2023-{year}
+                <a
+                    href="https://github.com/drawbu"
+                    target="_blank"
+                    rel="noopener">drawbu (Clément Boillot)</a
+                >. Any and all opinions listed here are my own and not
+                representative of any of my employers, past, future, and/or
+                present.
+            </p>
+            <p>
+                Served by me using Nix and Docker.
+                <br />
+                Build rev:
+                <a
+                    target="_blank"
+                    rel="noopener"
+                    href={"https://github.com/drawbu/drawbu.dev/tree/" + rev}
+                >
+                    {rev.substring(0, 8)}
+                </a>
+            </p>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Layout from "../../layouts/Layout.astro";
+
+const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Layout>
+    <div class="flex flex-col gap-4">
+        <h2>Blog</h2>
+        <ul preload="mouseover">
+            {
+                posts.map((post) => (
+                    <li>
+                        <span class="mr-2">
+                            <FormattedDate date={post.data.date} />
+                        </span>
+                        <a href={`/blog/${post.id}`}>{post.data.title}</a>
+                    </li>
+                ))
+            }
+        </ul>
+        <ul class="flex flex-row gap-4 list-disc list-inside!">
+            <li class="list-none">
+                <a href="/blog/rss.xml" hx-boost="false">RSS Feed</a>
+            </li>
+        </ul>
+    </div>
+</Layout>

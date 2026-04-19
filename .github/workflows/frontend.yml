@@ -1,0 +1,68 @@
+name: Build frontend
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GIT_REV: ${{ github.sha }}
+
+jobs:
+  check:
+    name: Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Install latest version of corepack
+        run: npm i -g --force corepack && corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm --filter app install --frozen-lockfile
+
+      - name: Check types
+        working-directory: app
+        run: pnpm run check
+
+  deploy:
+    name: Build & deploy
+    runs-on: ubuntu-latest
+    needs: check
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Install latest version of corepack
+        run: npm i -g --force corepack && corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.x
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm --filter app install --frozen-lockfile
+
+      - name: Build app
+        working-directory: app
+        run: pnpm run build
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          wranglerVersion: 4.87.0
+          workingDirectory: app

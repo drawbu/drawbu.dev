@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+    --font-body: var(--font-iosevka);
+    --font-display: var(--font-iosevka);
+    --font-mono: var(--font-iosevka);
+    --font-sans: var(--font-iosevka);
+    --font-serif: var(--font-iosevka);
+}
+
+html {
+    @apply text-lg;
+}
+
+a {
+    @apply text-blue-500 underline;
+}
+
+h1 {
+    @apply text-3xl font-extrabold;
+}
+
+h2 {
+    @apply text-2xl font-bold;
+}
+
+h3,
+h4,
+h5,
+h6 {
+    @apply text-xl font-bold;
+}
+
+ul {
+    @apply list-inside lg:list-outside;
+}
+
+#article pre {
+    @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll;
+}
+
+#article p > code {
+    @apply bg-gray-200 px-1 dark:bg-gray-600;
+}
+
+#article blockquote > p {
+    @apply ml-4 flex flex-col text-gray-500;
+}

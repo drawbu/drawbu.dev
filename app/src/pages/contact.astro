@@ -1,0 +1,54 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+    <div class="flex flex-col gap-4">
+        <h2>Contact</h2>
+        <div class="gap-4 grid lg:grid-cols-2">
+            <div class="flex flex-col gap-2">
+                <h3>Email:</h3>
+                <a href="mailto:contact@drawbu.dev">contact@drawbu.dev</a>
+                <p>Other useful links:</p>
+                <ul class="list-disc">
+                    <li>
+                        <a
+                            href="https://github.com/drawbu"
+                            target="_blank"
+                            rel="noopener">GitHub</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://bsky.app/profile/drawbu.dev"
+                            target="_blank"
+                            rel="noopener">Bluesky</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://social.treehouse.systems/@drawbu"
+                            target="_blank"
+                            rel="noopener">Fediverse</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="https://x.com/@drawbu"
+                            target="_blank"
+                            rel="noopener">X</a
+                        >
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3>Discord:</h3>
+                <p>
+                    I'm available most of the time on Discord, just send me a
+                    message and I'll answer as soon as possible.
+                </p>
+                <code class="bg-gray-300 p-1 rounded">drawbu</code>
+            </div>
+        </div>
+    </div>
+</Layout>
