@@ -13,7 +13,7 @@ html {
 }
 
 a {
-    @apply text-blue-500 underline;
+    @apply text-blue-500 dark:text-blue-400 underline;
 }
 
 h1 {
@@ -36,13 +36,13 @@ ul {
 }
 
 #article pre {
-    @apply p-4 text-sm border-solid border-2 border-black rounded bg-scroll overflow-scroll;
+    @apply p-4 text-sm rounded bg-scroll overflow-scroll;
 }
 
 #article p > code {
-    @apply bg-gray-200 px-1 dark:bg-gray-600;
+    @apply bg-gray-200 px-1 dark:bg-zinc-700 rounded;
 }
 
 #article blockquote > p {
-    @apply ml-4 flex flex-col text-gray-500;
+    @apply ml-4 flex flex-col text-zinc-100;
 }
