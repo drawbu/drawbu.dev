@@ -27,10 +27,9 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm --filter app install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Check types
-        working-directory: app
         run: pnpm run check
 
   deploy:
@@ -53,10 +52,9 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm --filter app install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build app
-        working-directory: app
         run: pnpm run build
 
       - name: Deploy
@@ -65,4 +63,3 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           wranglerVersion: 4.87.0
-          workingDirectory: app

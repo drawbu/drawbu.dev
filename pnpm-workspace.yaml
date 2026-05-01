@@ -1,5 +1,3 @@
-packages:
-  - app
 allowBuilds:
   esbuild: true
   sharp: true
