@@ -36,7 +36,7 @@ const rev = import.meta.env.GIT_REV;
         />
     </head>
     <body
-        class="mx-auto max-w-xl lg:max-w-4xl flex flex-col gap-8 py-4 px-4 dark:bg-zinc-900 dark:text-zinc-400"
+        class="mx-auto max-w-xl lg:max-w-4xl text-lg flex flex-col gap-8 py-4 px-4 min-h-dvh dark:bg-zinc-900 dark:text-zinc-400"
         hx-ext="preload"
         hx-boost="true"
     >
@@ -54,10 +54,10 @@ const rev = import.meta.env.GIT_REV;
                 rel="noopener">linkedin</a
             >
         </header>
-        <main>
+        <main class="flex-1">
             <slot />
         </main>
-        <footer>
+        <footer class="mb-8">
             <p>
                 Copyright 2023-{year}
                 <a
