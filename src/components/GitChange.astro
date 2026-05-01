@@ -1,0 +1,83 @@
+---
+export type Commit = {
+    change_id: string;
+    colored: number;
+    current?: true;
+    message: string;
+    date?: Date;
+    bookmark?: string;
+};
+
+type Props = Commit;
+
+const { change_id, current, colored, message, date, bookmark } = Astro.props;
+---
+
+<details>
+    <summary
+        class="cursor-pointer list-none hover:bg-zinc-100 hover:dark:bg-zinc-800 rounded w-max pr-4"
+    >
+        <div>
+            {
+                current ? (
+                    <span class="select-none inline-block w-[10pt] text-lime-600 dark:text-lime-500">
+                        @
+                    </span>
+                ) : (
+                    <span class="select-none inline-block w-[10pt] text-teal-500 dark:text-teal-200 text-xs">
+                        ⯁
+                    </span>
+                )
+            }
+            <span class="text-zinc-500 inline-flex">
+                <span class="text-pink-500 dark:text-pink-300">
+                    {change_id.substring(0, colored)}
+                </span>
+                {change_id.substring(colored)}
+            </span>
+            <span class="text-amber-500 dark:text-amber-200">Clément</span>
+            <span class="text-teal-500 dark:text-teal-200">
+                {
+                    date ? (
+                        <time datetime={date.toISOString()}>
+                            {date.toLocaleDateString("en-us", {
+                                year: "numeric",
+                                month: "short",
+                            })}
+                        </time>
+                    ) : (
+                        <>now</>
+                    )
+                }
+            </span>
+            {
+                bookmark && (
+                    <span class="text-pink-500 dark:text-pink-300">
+                        {bookmark}
+                    </span>
+                )
+            }
+        </div>
+        <div>
+            <span class="select-none inline-block w-[10pt]">│</span>
+            <span>{message}</span>
+        </div>
+    </summary>
+    <div class="commit-body mb-4 mt-2 text-zinc-600">
+        <slot />
+    </div>
+</details>
+
+<style>
+    .commit-body :global(ul) {
+        list-style-type: none;
+        li {
+            display: flex;
+            gap: 1ch;
+        }
+        li:before {
+            content: "-";
+            flex-shrink: 0;
+        }
+    }
+</style>

@@ -19,4 +19,12 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { blog };
+const history = defineCollection({
+  loader: glob({ base: "./src/content/history", pattern: "**/*.{md,mdx}" }),
+  schema: z.object({
+    message: z.string(),
+    date: z.coerce.date().optional(),
+  }),
+});
+
+export const collections = { blog, history };

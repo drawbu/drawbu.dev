@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from "astro:content";
+import GitCommit from "~/components/GitChange.astro";
+import type { Commit } from "~/components/GitChange.astro";
+
+type Object = Pick<Commit, "change_id" | "colored" | "current" | "bookmark"> & {
+    content_id: string;
+};
+
+const history_commits: Object[] = [
+    {
+        change_id: "iptzuqvr",
+        colored: 1,
+        content_id: "intern-paris",
+        bookmark: "school",
+    },
+    { change_id: "rfrstvru", colored: 2, current: true, content_id: "reflog" },
+    { change_id: "sfsuquqn", colored: 4, content_id: "sfsu", bookmark: "main" },
+    { change_id: "wrutknyr", colored: 1, content_id: "wepartum" },
+    { change_id: "pxmkyotr", colored: 1, content_id: "piana" },
+    { change_id: "tekvyusq", colored: 3, content_id: "epitech" },
+    { change_id: "unispnru", colored: 3, content_id: "universite_bdx" },
+];
+
+const history_content = (await getCollection("history")).sort((a, b) =>
+    a.id.localeCompare(b.id),
+);
+
+const merged = history_commits.map((raw) => {
+    const item = history_content.find((h) => h.id === raw.content_id)!;
+    return { ...raw, ...item.data, item };
+});
+---
+
+<ol class="font-mono">
+    {
+        merged.map(async (entry) => {
+            const { Content } = await render(entry.item);
+            return (
+                <li>
+                    <GitCommit {...entry}>
+                        <Content />
+                    </GitCommit>
+                </li>
+            );
+        })
+    }
+    <li class="select-none">~</li>
+</ol>
+<p class="text-base text-zinc-400 dark:text-zinc-500">
+    <em>hint: click on each commit</em>
+</p>
