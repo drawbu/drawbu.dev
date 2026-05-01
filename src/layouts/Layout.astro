@@ -2,7 +2,7 @@
 import { Font } from "astro:assets";
 import "../styles/global.css";
 const year = new Date().getFullYear();
-const rev = import.meta.env.GIT_REV || "[object Object]";
+const rev = import.meta.env.GIT_REV;
 ---
 
 <!doctype html>
@@ -75,9 +75,10 @@ const rev = import.meta.env.GIT_REV || "[object Object]";
                 <a
                     target="_blank"
                     rel="noopener"
-                    href={"https://github.com/drawbu/drawbu.dev/tree/" + rev}
+                    href={"https://github.com/drawbu/drawbu.dev/tree/" +
+                        (rev || "HEAD")}
                 >
-                    {rev.substring(0, 8)}
+                    {rev?.substring(0, 8) || "[object Object]"}
                 </a>
             </p>
         </footer>
