@@ -1,2 +1,3 @@
 User-agent: *
-allow: /
+
+Sitemap: https://drawbu.dev/sitemap-index.xml
