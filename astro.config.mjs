@@ -9,6 +9,8 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   integrations: [mdx(), sitemap()],
 
+  compressHTML: true,
+
   fonts: [
     {
       provider: fontProviders.local(),
